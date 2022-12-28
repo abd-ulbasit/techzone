@@ -1,42 +1,30 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "sqlite"
-  // NOTE: When using postgresql, mysql or sqlserver, uncomment the @db.Text annotations in model Account below
-  // Further reading:
-  // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
-  // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
-  url      = env("DATABASE_URL")
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
 }
 
-model Example {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-// Necessary for Next auth
 model Account {
   id                String  @id @default(cuid())
   userId            String
   type              String
   provider          String
   providerAccountId String
-  refresh_token     String? // @db.Text
-  access_token      String? // @db.Text
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String? // @db.Text
+  id_token          String? @db.Text
   session_state     String?
   user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
+  @@index([userId])
 }
 
 model Session {
@@ -45,16 +33,22 @@ model Session {
   userId       String
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
 
 model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String?   @unique
-  emailVerified DateTime?
-  image         String?
-  accounts      Account[]
-  sessions      Session[]
+  id             String           @id @default(cuid())
+  name           String?
+  email          String?          @unique
+  emailVerified  DateTime?
+  image          String?
+  accounts       Account[]
+  sessions       Session[]
+  cart           Cart[]
+  product_review Product_review[]
+  order          Orders[]
+  userDetail     User_details[]
 }
 
 model VerificationToken {
@@ -63,4 +57,98 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+model Cart {
+  user_id          String
+  product_id       Int
+  product_quantity Int
+  user             User    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  product          Product @relation(fields: [product_id], references: [pid], onDelete: Cascade)
+
+  @@id([user_id, product_id])
+  @@index([user_id])
+  @@index([product_id])
+}
+
+model Order_detail {
+  order_id         Int
+  product_id       Int
+  product_quantity Int
+  orders           Orders  @relation(fields: [order_id], references: [order_id], onDelete: Cascade)
+  product          Product @relation(fields: [product_id], references: [pid], onDelete: Cascade)
+
+  @@id([order_id, product_id])
+  @@index([order_id])
+  @@index([product_id])
+}
+
+model Orders {
+  order_id     Int            @id @unique(map: "order_id_UNIQUE") @default(autoincrement())
+  user_id      String
+  order_date   DateTime       @db.Date
+  delivered    Int            @db.TinyInt
+  user         User           @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  order_detail Order_detail[]
+
+  @@index([user_id])
+}
+
+model Product {
+  pid                  Int              @id @unique(map: "pid_UNIQUE") @default(autoincrement())
+  ProductName          String
+  category_Id          Int
+  quanity_in_inventory Int
+  Price                Int
+  p_rating             Float            @db.Float
+  meta_description     String           @db.TinyText
+  full_description     String?          @db.MediumText
+  brand_id             Int
+  cart                 Cart[]
+  product_review       Product_review[]
+  order_detail         Order_detail[]
+  category             Category         @relation(fields: [category_Id], references: [id], onDelete: Cascade)
+  brand                Brand            @relation(fields: [brand_id], references: [id])
+
+  @@index([category_Id])
+  @@index([brand_id])
+}
+
+model Product_review {
+  user_id       String
+  product_id    Int
+  review_title  String   @db.VarChar(45)
+  review_detail String   @db.VarChar(45)
+  rating        String   @db.VarChar(45)
+  published_at  DateTime @db.Date
+
+  user    User    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [product_id], references: [pid], onDelete: Cascade)
+
+  @@id([user_id, product_id])
+  @@index([user_id])
+  @@index([product_id])
+}
+
+model User_details {
+  user_id  String @id
+  address  String @db.VarChar(45)
+  city     String @db.VarChar(45)
+  province String @db.VarChar(45)
+  user     User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@index([user_id])
+}
+
+model Category {
+  id                Int       @id
+  category_name     String
+  items_in_category Int
+  product           Product[]
+}
+
+model Brand {
+  id      Int       @id
+  name    String
+  product Product[]
 }
