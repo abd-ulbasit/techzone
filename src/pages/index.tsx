@@ -3,12 +3,11 @@ import Head from "next/head";
 // import Link from "next/link";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { trpc } from "../utils/trpc";
+import ProductCard from "../components/UI/ProductCard";
 const Home: NextPage = () => {
-  // const { data:saying	}=trpc.example.hello.useQuery();
-  // const { data: users } = trpc.example.getUser.useQuery()
-  const { data } = trpc.example.getAll.useQuery();
-  // const { data: accounts } = trpc.example.getuserwithname.useQuery({});
-  console.log(data);
+  const { data: products } = trpc.products.getAllProducts.useQuery();
+  // console.log(data);
+
   return (
     <>
 
@@ -18,7 +17,20 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
+        <div className="" >
+          <div>
+            {products?.map((product) => {
+
+              return <div key={product.pid} >
+                <ProductCard props={product} />
+              </div>
+            })
+
+            }
+          </div>
+        </div>
       </main>
+
     </>
   );
 };

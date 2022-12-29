@@ -51,13 +51,13 @@ model User {
   userDetail     User_details[]
 }
 
-model VerificationToken {
-  identifier String
-  token      String   @unique
-  expires    DateTime
+// model VerificationToken {
+//   identifier String
+//   token      String   @unique
+//   expires    DateTime
 
-  @@unique([identifier, token])
-}
+//   @@unique([identifier, token])
+// }
 
 model Cart {
   user_id          String
@@ -77,6 +77,7 @@ model Order_detail {
   product_quantity Int
   orders           Orders  @relation(fields: [order_id], references: [order_id], onDelete: Cascade)
   product          Product @relation(fields: [product_id], references: [pid], onDelete: Cascade)
+  phoneNo          String
 
   @@id([order_id, product_id])
   @@index([order_id])
@@ -104,6 +105,7 @@ model Product {
   meta_description     String           @db.TinyText
   full_description     String?          @db.MediumText
   brand_id             Int
+  image                String           @db.MediumText
   cart                 Cart[]
   product_review       Product_review[]
   order_detail         Order_detail[]
@@ -121,9 +123,8 @@ model Product_review {
   review_detail String   @db.VarChar(45)
   rating        String   @db.VarChar(45)
   published_at  DateTime @db.Date
-
-  user    User    @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  product Product @relation(fields: [product_id], references: [pid], onDelete: Cascade)
+  user          User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  product       Product  @relation(fields: [product_id], references: [pid], onDelete: Cascade)
 
   @@id([user_id, product_id])
   @@index([user_id])
@@ -141,9 +142,9 @@ model User_details {
 }
 
 model Category {
-  id                Int       @id
   category_name     String
   items_in_category Int
+  id                Int       @id
   product           Product[]
 }
 
