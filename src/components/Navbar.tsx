@@ -36,7 +36,7 @@ const Navbar = ({ children }: { children: ReactNode }) => {
                         </div>
                     }
 
-                    <button onClick={() => sessionData ? signOut() : signIn("google")} className="bg-slate-500 px-5 py-1 hover:bg-slate-600 hover:scale-105 my-2 rounded-md "  > {sessionData ? "SignOut" : "SignIn"} </button>
+                    <button onClick={() => sessionData ? signOut() : signIn()} className="bg-slate-500 px-5 py-1 hover:bg-slate-600 hover:scale-105 my-2 rounded-md "  > {sessionData ? "SignOut" : "SignIn"} </button>
                 </div>
                 <div className='flex' >
                     <Link href={"/Cart"} className="relative p-1 px-3 mx-3" >
