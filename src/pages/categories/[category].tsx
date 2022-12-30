@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router'
 import React from 'react'
 import { trpc } from '../../utils/trpc';
-import Image from 'next/image';
+// import Image from 'next/image';
 import ProductCard from '../../components/UI/ProductCard';
 const Category = () => {
     const router = useRouter();

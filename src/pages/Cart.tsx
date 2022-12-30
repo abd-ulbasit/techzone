@@ -22,6 +22,9 @@ const Cart = () => {
         })
     }
     const handleDecremnetIncart = (product_id: number) => {
+        // if (cart?.find((item) => item.product_id === product_id)?.product_quantity <= 0) {
+        //     return;
+        // }
         if (cart?.find((item) => item.product_id === product_id)?.product_quantity === 1) {
             // alert("you can not remove more items")
             removeFromCartMutation.mutate({ user_id: user_id, product_id: product_id })

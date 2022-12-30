@@ -18,7 +18,7 @@ const Navbar = ({ children }: { children: ReactNode }) => {
                 <div className='flex'>
 
                     {catogoryData ? catogoryData.map((category) => {
-                        return <div key={category.id} className={"bg-slate-500 py-2 px-6 m-2 w-auto rounded-sm hover:scale-105 transition-all"} >
+                        return <div key={category.id} className={"bg-slate-500 py-2 px-6 m-2 w-auto rounded-md hover:scale-105 transition-all"} >
                             <Link href={`/categories/${category.category_name}`} >
                                 {category.category_name}
                             </Link>
