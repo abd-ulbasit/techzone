@@ -11,12 +11,12 @@ Technologies used are:
 - [tRPC](https://trpc.io)
 
 How to run on your machine:
--Clone the project
--Install the dependencies.
--Create a dot env file and add environmental variables as mentioned in .env.example file.
--(for Ease, rename the example.env to .env).
--Run : "npx prisma db push" to push schema to the database.
--Run the website locally with command "npm run dev"
+- Clone the project
+- Install the dependencies.
+- Create a dot env file and add environmental variables as mentioned in .env.example file.
+- (for Ease, rename the example.env to .env).
+- Run : "npx prisma db push" to push schema to the database.
+- Run the website locally with command "npm run dev"
 !!!! The project is now up and running on localhost:3000 !
 
 
