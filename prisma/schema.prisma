@@ -51,14 +51,6 @@ model User {
   userDetail     User_details[]
 }
 
-// model VerificationToken {
-//   identifier String
-//   token      String   @unique
-//   expires    DateTime
-
-//   @@unique([identifier, token])
-// }
-
 model Cart {
   user_id          String
   product_id       Int
@@ -153,3 +145,11 @@ model Brand {
   name    String
   product Product[]
 }
+
+// model VerificationToken {
+//   identifier String
+//   token      String   @unique
+//   expires    DateTime
+
+//   @@unique([identifier, token])
+// }
