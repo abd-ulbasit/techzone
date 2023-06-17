@@ -60,7 +60,7 @@ const Cart = ({ session }: { session: Session | null }) => {
             {
                 noOfItemsInCart && noOfItemsInCart > 0 ?
                     <div className='bg-red-500 p-1 text-black  absolute -top-1 -right-1 rounded-full' >
-                        {noOfItemsInCart} Items
+                        {noOfItemsInCart}
                     </div> : null
             }
         </Link>
