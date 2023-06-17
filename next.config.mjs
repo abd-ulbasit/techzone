@@ -27,6 +27,12 @@ const config = {
         pathname: "/**",
         port: "",
       },
+      {
+        protocol: "https",
+        hostname: "www.czone.com.pk",
+        pathname: "/**",
+        port: "",
+      },
     ],
   },
 };
