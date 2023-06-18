@@ -68,9 +68,6 @@ const CheckOut = () => {
                 })
             }
         }
-        // console.log(addOrderMutation.data?.order_id)
-        // console.log(data);
-
         emptyCartM.mutate({ user_id: user_id })
         // console.log(addressRef.current?.value);
         alert("Your Order has been placed . GO to homePage")
@@ -83,32 +80,32 @@ const CheckOut = () => {
     }, 0)
     return (
         <div className='w-9/12 mx-auto my-4' >
-            <h1 className='font-extrabold text-4xl text-indigo-700' >CheckOut</h1>
-            <form onSubmit={handleAddUserDetails} className={"flex flex-col w-full border"} >
-                <div className='border flex m-2 gap-3 align-middle items-center ' >
+            <h1 className='font-extrabold text-4xl text-primary-content' >CheckOut</h1>
+            <form onSubmit={handleAddUserDetails} className={"flex flex-col w-full"} >
+                <div className='flex my-2 gap-3 align-middle items-center ' >
                     <label htmlFor="address" className='' >Shipping Address</label>
-                    <input type="text" name="address" id="address" ref={addressRef} className=" border flex-grow p-3" />
+                    <input type="text" name="address" id="address" ref={addressRef} className="input flex-grow p-3 bg-base-200" />
                 </div>
-                <div className='grid grid-cols-3 [&>*]:p-2' >
-                    <div className='flex items-center gap-2 ' >
+                <div className='flex flex-wrap gap-2 flex-col' >
+                    <div className='flex items-center  w-full justify-between ' >
                         <label htmlFor="city" >City:</label>
-                        <input type="text" name="city" id="city" minLength={4} ref={cityRef} className="p-2" />
+                        <input type="text" name="city" id="city" minLength={4} ref={cityRef} className="input bg-base-200" />
                     </div>
-                    <div className='flex items-center gap-2 ' >
+                    <div className='flex items-center w-full  justify-between ' >
                         <label htmlFor="city" >Province:</label>
-                        <input type="text" name="city" id="city" minLength={4} ref={provinceRef} className="p-2" />
+                        <input type="text" name="city" id="city" minLength={4} ref={provinceRef} className="input bg-base-200" />
                     </div>
-                    <div className='flex items-center gap-2 ' >
+                    <div className='flex items-center w-full  justify-between ' >
                         <label htmlFor="city" >Cell:</label>
-                        <input type="text" name="city" id="city" minLength={7} ref={phoneNoRef} className="p-2" />
+                        <input type="text" name="city" id="city" minLength={7} ref={phoneNoRef} className="input bg-base-200" />
                     </div>
                 </div>
-                <div className='w-full border' >
+                <div className='w-full ' >
                     {
                         cartX ? cartX.map((item) => {
-                            return <div key={item.product_id} className="border flex flex-col" >
+                            return <div key={item.product_id} className="flex flex-col" >
                                 <div  >
-                                    <div>{item.product.ProductName}</div>
+                                    <p className='font-medium italic' >{item.product.ProductName}</p>
                                     <div className='float-right m-2' >{item.product.Price} x {item.product_quantity} = {item.product.Price * item.product_quantity}</div>
                                 </div>
 
@@ -116,7 +113,7 @@ const CheckOut = () => {
                         }) : ""}
                     <div className='font-semibold italic text-red-700 float-right pr-3' >{grandtotal ? `GrandTotal: ${grandtotal} PKRs` : ""}</div>
                 </div>
-                <button className='btn' >PlaceOrder </button>
+                <button className='btn mt-2' >PlaceOrder </button>
             </form>
         </div>
     )

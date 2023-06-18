@@ -46,16 +46,9 @@ const Cart = () => {
     }, 0)
     return (
         <div>
-            <div className='flex flex-wrap gap-6 content-center align-middle'>
+        <div className='flex flex-wrap gap-6 justify-center'>
                 {
                     cart ? cart.map((item) => {
-                        // return <div className="card lg:card-side bg-base-100 shadow-xl w-2/5 w-" key={item.product_id} >
-                        //     <figure><Image src={item.product.image} alt={item.product.ProductName} width={300} height={300} /></figure>
-                        //     <div className="card-body">
-                        //        
-
-                        //     </div>
-                        // </div>
                         return <div className="card w-96 bg-base-100 shadow-xl image-full" key={item.product_id}>
                             <figure><Image src={item.product.image} alt={item.product.ProductName} width={500} height={500} /></figure>
                             <div className="card-body">
