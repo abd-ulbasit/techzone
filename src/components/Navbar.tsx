@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 import { trpc } from '../utils/trpc'
-// import Image from 'next/image';
+import { FaShoppingCart } from "react-icons/fa"
 import Link from 'next/link';
 import { signIn, signOut, useSession } from 'next-auth/react';
 import Image from 'next/image';
@@ -39,12 +39,12 @@ const Navbar = ({ children }: { children: ReactNode }) => {
                 <div className='flex'>
 
                 </div>
-                <div className='flex'>
+                <div className='flex gap-3 items-center '>
 
                     {sessionData ?
-                        <div className='rounded-full' >
-                            <Image src={sessionData.user?.image || " "} alt='profilePic' width={40} height={40} className="rounded-full  m-2" />
-                        </div> : <div className='w-10 h-10 rounded-full m-2 ' >
+                        <div className='rounded-full w-10 h-10' >
+                            <Image src={sessionData.user?.image || " "} alt='profilePic' width={40} height={40} className="rounded-full " />
+                        </div> : <div className='w-10 h-10 rounded-full ' >
                             <Image src="/static/profilepic.png" alt="" width="40" height="40" className='rounded-full' />
                         </div>
                     }
@@ -69,17 +69,14 @@ const Cart = ({ session }: { session: Session | null }) => {
         user_id
     })
 
-    return (<div className='flex' >
-        <Link href={"/Cart"} className="relative p-1 px-3 mx-3" >
-            <Image src={"/static/shopping_cart_FILL0_wght400_GRAD0_opsz48.svg"} alt="Cart"
-                width={40} height="40" className='bg-yellow-400  rounded-sm' ></Image>
-            {
-                noOfItemsInCart && noOfItemsInCart > 0 ?
-                    <div className='bg-red-500 p-1 text-black  absolute -top-1 -right-1 rounded-full' >
-                        {noOfItemsInCart}
-                    </div> : null
-            }
-        </Link>
-    </div>)
+    return (<Link href={"/Cart"} className="relative pl-2 pr-6 " >
+        <FaShoppingCart className="text-2xl" />
+        {
+            noOfItemsInCart && noOfItemsInCart > 0 ?
+                <div className='bg-red-500 p-1 text-black  absolute -top-4 right-1 rounded-full text-sm' >
+                    {noOfItemsInCart}
+                </div> : null
+        }
+    </Link>)
 
 }
