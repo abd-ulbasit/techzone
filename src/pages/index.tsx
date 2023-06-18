@@ -24,7 +24,6 @@ const Home: NextPage = () => {
                 <ProductCard props={product} />
               </div>
             })
-
             }
           </div>
         </div>

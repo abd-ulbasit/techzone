@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { signIn, signOut, useSession } from 'next-auth/react';
 import Image from 'next/image';
 import type { Session } from 'next-auth';
+import Category from '../pages/categories/[category]';
 const Navbar = ({ children }: { children: ReactNode }) => {
     const { data: sessionData } = useSession();
     const { data: catogoryData } = trpc.categories.getCatogoires.useQuery();
@@ -12,16 +13,32 @@ const Navbar = ({ children }: { children: ReactNode }) => {
         <>
             <div className='bg-slate-800 flex  w-full items-center justify-between  ' >
                 <div className='bg-slate-300 p-4  ' ><Link href={"/"} >TECHZONE</Link></div>
+
+                <div className="drawer">
+                    <input id="my-drawer" type="checkbox" className="drawer-toggle" />
+                    <div className="drawer-content">
+                        {/* Page content here */}
+                        <label htmlFor="my-drawer" className="btn btn-primary drawer-button">Categories</label>
+                    </div>
+                    <div className="drawer-side">
+                        <label htmlFor="my-drawer" className="drawer-overlay"></label>
+                        <ul className="menu p-4 w-80 h-full bg-base-200 text-base-content">
+                            {/* Sidebar content here */}
+                            <li><a>Sidebar Item 2</a></li>
+
+                            {catogoryData ? catogoryData.map((category) => {
+                                return <li key={category.id} className={"bg-slate-500 py-2 px-6 m-2 w-auto rounded-md hover:scale-105 transition-all"} >
+                                    <Link href={`/categories/${category.category_name}`} >
+                                        {category.category_name}
+                                    </Link>
+                                </li>
+                            }) : ""
+                            }
+                        </ul>
+                    </div>
+                </div>
                 <div className='flex'>
 
-                    {catogoryData ? catogoryData.map((category) => {
-                        return <div key={category.id} className={"bg-slate-500 py-2 px-6 m-2 w-auto rounded-md hover:scale-105 transition-all"} >
-                            <Link href={`/categories/${category.category_name}`} >
-                                {category.category_name}
-                            </Link>
-                        </div>
-                    }) : ""
-                    }
                 </div>
                 <div className='flex'>
 
@@ -33,7 +50,7 @@ const Navbar = ({ children }: { children: ReactNode }) => {
                         </div>
                     }
 
-                    <button onClick={() => sessionData ? signOut() : signIn()} className="bg-slate-500 px-5 py-1 hover:bg-slate-600 hover:scale-105 my-2 rounded-md "  > {sessionData ? "SignOut" : "SignIn"} </button>
+                    <button onClick={() => sessionData ? signOut() : signIn()} className=" bg-slate-500 px-5 py-1 hover:bg-slate-600 hover:scale-105 my-2 rounded-md "  > {sessionData ? "SignOut" : "SignIn"} </button>
                 </div>
                 <Cart session={sessionData} />
             </div>
