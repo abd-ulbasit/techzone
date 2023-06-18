@@ -56,15 +56,17 @@ const ProductDetail = () => {
             </div>
             <div>
                 <h2 className='text-3xl font-bold ml-8 p-3' >Similar Products</h2>
-                {similarProducts ? similarProducts.product.filter((item) => {
-                    return item.pid !== product?.pid
-                }).map((item) => {
-                    return <div key={item.pid} >
-                        <ProductCard props={item} ></ProductCard>
-                    </div>
-                })
+                <div className="flex gap-3 flex-wrap  justify-center" >
+                    {similarProducts ? similarProducts.product.filter((item) => {
+                        return item.pid !== product?.pid
+                    }).map((item) => {
+                        return <div key={item.pid} >
+                            <ProductCard props={item} ></ProductCard>
+                        </div>
+                    })
 
-                    : ""}
+                        : ""}
+                </div>
             </div>
         </div>
     )

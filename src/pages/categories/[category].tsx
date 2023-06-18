@@ -10,19 +10,22 @@ const Category = () => {
     const aCategory = category as string;
     const { data } = trpc.categories.getProductbyCategory.useQuery({ category: aCategory });
     console.log(category);
-    const product = data?.product;
+    const products = data?.product;
     // console.log(products);
 
 
 
     return (
-        <div>{product?.map((item) => {
-            return <div key={item.pid}>
-                <ProductCard props={item} />
-            </div>
-            // return <Image key={item.pid} src={} />
+        <div className="flex gap-3 flex-wrap  justify-center items-start " >
 
-        })}</div>
+            {products?.map((product) => {
+
+                return <div key={product.pid} >
+                    <ProductCard props={product} />
+                </div>
+            })
+            }
+        </div>
     )
 }
 

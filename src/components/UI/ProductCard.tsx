@@ -48,7 +48,7 @@ const ProductCard = ({ props }: { props: Product }) => {
         <div className="card card-compact w-96 bg-base-100 shadow-xl">
             <figure><Image src={props.image} alt={props.ProductName} width={400} height={400} /></figure>
             <div className="card-body">
-                <h2 className="card-title">{props.ProductName}</h2>
+                <h2 className="card-title line-clamp-3">{props.ProductName}</h2>
                 <p>Only{props.quanity_in_inventory} remaining!</p>
                 <p className='font-bold text-lg text-red-600' >{props.Price} PKRs</p>
                 <div className="card-actions justify-end">
