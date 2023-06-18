@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { signIn, signOut, useSession } from 'next-auth/react';
 import Image from 'next/image';
 import type { Session } from 'next-auth';
-import Category from '../pages/categories/[category]';
 const Navbar = ({ children }: { children: ReactNode }) => {
     const { data: sessionData } = useSession();
     const { data: catogoryData } = trpc.categories.getCatogoires.useQuery();
