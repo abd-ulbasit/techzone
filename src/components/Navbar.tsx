@@ -69,11 +69,11 @@ const Cart = ({ session }: { session: Session | null }) => {
         user_id
     })
 
-    return (<Link href={"/Cart"} className="relative pl-2 pr-6 " >
+    return (<Link href={"/Cart"} className="relative pl-2 pr-6 mr-4 " >
         <FaShoppingCart className="text-2xl" />
         {
             noOfItemsInCart && noOfItemsInCart > 0 ?
-                <div className='bg-red-500 p-1 text-black  absolute -top-4 right-1 rounded-full text-sm' >
+                <div className='bg-base-200 p-1 text-primary  absolute -top-4 right-1 rounded-full text-sm' >
                     {noOfItemsInCart}
                 </div> : null
         }
