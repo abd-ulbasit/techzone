@@ -36,16 +36,25 @@ const ProductCard = ({ props }: { props: Product }) => {
         router.push(`/productdetail/${props.pid}`)
     }
     return (
-        <div className='border border-red-800 rounded-lg flex flex-row p-3 mx-auto w-4/6 my-2'>
-            <div className='w-40 h-40 ' >
-                <Image src={props.image} alt={props.ProductName} width={500} height={500} loading="lazy" className="" />
-            </div>
-            <div className='px-4' >
-                <div>{props.ProductName}</div>
-                <div>Only {props.quanity_in_inventory} remaining!</div>
-                <div className='font-bold text-lg text-red-600' >{props.Price} PKRs</div>
-                <button className='btn' onClick={handleAddToCart} >ADD TO CART </button>
-                <button className='btn' onClick={handleShowDetail} >Show Details</button>
+        // <div className=' card flex flex-row '>
+        //     <div className='w-40 h-40 ' >
+        //         <Image src={props.image} alt={props.ProductName} width={500} height={500} loading="lazy" className="" />
+        //     </div>
+        //     <div className='px-4' >
+        //         <div>{props.ProductName}</div>
+        //         <div>Only {props.quanity_in_inventory} remaining!</div>
+        //     </div>
+        // </div>
+        <div className="card card-compact w-96 bg-base-100 shadow-xl">
+            <figure><Image src={props.image} alt={props.ProductName} width={400} height={400} /></figure>
+            <div className="card-body">
+                <h2 className="card-title">{props.ProductName}</h2>
+                <p>Only{props.quanity_in_inventory} remaining!</p>
+                <p className='font-bold text-lg text-red-600' >{props.Price} PKRs</p>
+                <div className="card-actions justify-end">
+                    <button className='btn' onClick={handleAddToCart} >ADD TO CART </button>
+                    <button className='btn' onClick={handleShowDetail} >Show Details</button>
+                </div>
             </div>
         </div>
     )

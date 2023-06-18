@@ -23,7 +23,6 @@ const Navbar = ({ children }: { children: ReactNode }) => {
                         <label htmlFor="my-drawer" className="drawer-overlay"></label>
                         <ul className="menu p-4 w-80 h-full text-base-content">
                             {/* Sidebar content here */}
-                            <li><a>Sidebar Item 2</a></li>
 
                             {catogoryData ? catogoryData.map((category) => {
                                 return <li key={category.id} className={"py-2 px-6 m-2 w-auto rounded-md hover:scale-105 transition-all"} >

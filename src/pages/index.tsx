@@ -16,16 +16,15 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main >
-        <div className="" >
-          <div>
-            {products?.map((product) => {
+        <div className="flex gap-3 flex-wrap  justify-center" >
 
-              return <div key={product.pid} >
-                <ProductCard props={product} />
-              </div>
-            })
-            }
-          </div>
+          {products?.map((product) => {
+
+            return <div key={product.pid} >
+              <ProductCard props={product} />
+            </div>
+          })
+          }
         </div>
       </main>
 
