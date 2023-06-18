@@ -10,23 +10,23 @@ const Navbar = ({ children }: { children: ReactNode }) => {
     const { data: catogoryData } = trpc.categories.getCatogoires.useQuery();
     return (
         <>
-            <div className='bg-slate-800 flex  w-full items-center justify-between  ' >
-                <div className='bg-slate-300 p-4  ' ><Link href={"/"} >TECHZONE</Link></div>
+            <div className=' flex  w-full items-center justify-between  ' >
+                <div className='p-4  ' ><Link href={"/"} >TECHZONE</Link></div>
 
                 <div className="drawer">
                     <input id="my-drawer" type="checkbox" className="drawer-toggle" />
                     <div className="drawer-content">
                         {/* Page content here */}
-                        <label htmlFor="my-drawer" className="btn btn-primary drawer-button">Categories</label>
+                        <label htmlFor="my-drawer" className="btn  drawer-button">Categories</label>
                     </div>
                     <div className="drawer-side">
                         <label htmlFor="my-drawer" className="drawer-overlay"></label>
-                        <ul className="menu p-4 w-80 h-full bg-base-200 text-base-content">
+                        <ul className="menu p-4 w-80 h-full text-base-content">
                             {/* Sidebar content here */}
                             <li><a>Sidebar Item 2</a></li>
 
                             {catogoryData ? catogoryData.map((category) => {
-                                return <li key={category.id} className={"bg-slate-500 py-2 px-6 m-2 w-auto rounded-md hover:scale-105 transition-all"} >
+                                return <li key={category.id} className={"py-2 px-6 m-2 w-auto rounded-md hover:scale-105 transition-all"} >
                                     <Link href={`/categories/${category.category_name}`} >
                                         {category.category_name}
                                     </Link>
@@ -44,12 +44,12 @@ const Navbar = ({ children }: { children: ReactNode }) => {
                     {sessionData ?
                         <div className='rounded-full' >
                             <Image src={sessionData.user?.image || " "} alt='profilePic' width={40} height={40} className="rounded-full  m-2" />
-                        </div> : <div className='w-10 h-10 rounded-full m-2 bg-slate-500' >
+                        </div> : <div className='w-10 h-10 rounded-full m-2 ' >
                             <Image src="/static/profilepic.png" alt="" width="40" height="40" className='rounded-full' />
                         </div>
                     }
 
-                    <button onClick={() => sessionData ? signOut() : signIn()} className=" bg-slate-500 px-5 py-1 hover:bg-slate-600 hover:scale-105 my-2 rounded-md "  > {sessionData ? "SignOut" : "SignIn"} </button>
+                    <button onClick={() => sessionData ? signOut() : signIn()} className="btn"  > {sessionData ? "SignOut" : "SignIn"} </button>
                 </div>
                 <Cart session={sessionData} />
             </div>

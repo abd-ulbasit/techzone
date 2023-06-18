@@ -116,7 +116,7 @@ const CheckOut = () => {
                         }) : ""}
                     <div className='font-semibold italic text-red-700 float-right pr-3' >{grandtotal ? `GrandTotal: ${grandtotal} PKRs` : ""}</div>
                 </div>
-                <button className='border bg-slate-200 p-2 mx-72 my-4 rounded-md hover:scale-105' >PlaceOrder </button>
+                <button className='btn' >PlaceOrder </button>
             </form>
         </div>
     )

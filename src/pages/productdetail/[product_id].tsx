@@ -49,7 +49,7 @@ const ProductDetail = () => {
                     <div className='text-lg'>{product?.full_description}</div>
                     <div className='italic text-lg ' >Only <span className='font-bold'>{product?.quanity_in_inventory}</span> Remaining</div>
                     <div className='font-bold ' >PKRs <span className='text-red-600 text-xl' >{product?.Price}</span></div>
-                    <button className='rounded-full bg-red-400 p-3 m-2 px-6 hover:bg-red-600 ' onClick={() => handleAddToCart(product?.pid || 0)} >
+                    <button className="btn" onClick={() => handleAddToCart(product?.pid || 0)} >
                         ADD TO CART
                     </button>
                 </div>

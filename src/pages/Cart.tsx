@@ -61,9 +61,9 @@ const Cart = () => {
                                     <div>{item.product.Price} x {item.product_quantity} = {item.product.Price * item.product_quantity}</div>
                                 </div>
                                 <div className='flex items-center' >
-                                    <button onClick={() => handleDecremnetIncart(item.product_id)} ><Image src={"/static/remove_FILL0_wght400_GRAD0_opsz48.svg"} alt="-" width={30} height={30} /></button>
+                                    <button onClick={() => handleDecremnetIncart(item.product_id)} className='btn' ><Image src={"/static/remove_FILL0_wght400_GRAD0_opsz48.svg"} alt="-" width={30} height={30} /></button>
                                     <h2 className='px-4 rounded-lg ' >{item.product_quantity}</h2>
-                                    <button className='px-4 py-2 m-2' onClick={() => handleIncermentinCart(item.product_id)} ><Image src={"/static/add_FILL0_wght400_GRAD0_opsz48.svg"} alt="+" width={30} height={30} /></button>
+                                    <button className='btn' onClick={() => handleIncermentinCart(item.product_id)} ><Image src={"/static/add_FILL0_wght400_GRAD0_opsz48.svg"} alt="+" width={30} height={30} /></button>
                                 </div>
                             </div>
                         </div>
@@ -72,8 +72,8 @@ const Cart = () => {
             </div>
             {userSession &&
                 <div className=' fixed right-12 bottom-12' >
-                    <div className=' bg-yellow-300 mx-auto text-center text-lg font-bold text-red-600 py-4 rounded-t-md' >{grandtotal} PKRs</div>
-                    <Link href={`/CheckOut`} className=' p-3 bg-yellow-500 rounded-sm hover:scale-105  hover:rounded-md hover:bg-yellow-600 ' >Proceed to Checkout </Link>
+                    <div className=' mx-auto text-center text-lg font-bold text-red-600 py-4 rounded-t-md' >{grandtotal} PKRs</div>
+                    <Link href={`/CheckOut`} className=' p-3 rounded-sm hover:scale-105  hover:rounded-md ' >Proceed to Checkout </Link>
                 </div>}
         </div>
     )
