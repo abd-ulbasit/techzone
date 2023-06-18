@@ -19,14 +19,15 @@ const Navbar = ({ children }: { children: ReactNode }) => {
                         {/* Page content here */}
                         <label htmlFor="my-drawer" className="btn  drawer-button">Categories</label>
                     </div>
-                    <div className="drawer-side">
+                    <div className="drawer-side z-50">
                         <label htmlFor="my-drawer" className="drawer-overlay"></label>
-                        <ul className="menu p-4 w-80 h-full text-base-content">
+                        <ul className="menu p-4 w-80 h-full text-base-content bg-base-100">
                             {/* Sidebar content here */}
 
                             {catogoryData ? catogoryData.map((category) => {
-                                return <li key={category.id} className={"py-2 px-6 m-2 w-auto rounded-md hover:scale-105 transition-all"} >
+                                return <li key={category.id} className={" btn btn-outline my-1 "} >
                                     <Link href={`/categories/${category.category_name}`} >
+                                        <input id="my-drawer" type="checkbox" className="drawer-toggle" />
                                         {category.category_name}
                                     </Link>
                                 </li>

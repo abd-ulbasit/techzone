@@ -46,25 +46,27 @@ const Cart = () => {
     }, 0)
     return (
         <div>
-            <div className='flex flex-wrap gap-6 mx-auto pb-12'>
+            <div className='flex flex-wrap gap-6 content-center align-middle'>
                 {
                     cart ? cart.map((item) => {
-                        return <div key={item.product_id} className="border w-5/6 mx-auto" >
-                            <div className=' flex  border justify-between items-center '>
-                                <div>
-                                    <div className='' >
-                                        <Image src={item.product.image} alt={item.product.ProductName} width={120} height={120} />
-                                    </div>
-                                </div>
-                                <div>
-                                    <div>{item.product.ProductName}</div>
-                                    <div>{item.product.Price} x {item.product_quantity} = {item.product.Price * item.product_quantity}</div>
-                                </div>
-                                <div className='flex items-center' >
+                        // return <div className="card lg:card-side bg-base-100 shadow-xl w-2/5 w-" key={item.product_id} >
+                        //     <figure><Image src={item.product.image} alt={item.product.ProductName} width={300} height={300} /></figure>
+                        //     <div className="card-body">
+                        //        
+
+                        //     </div>
+                        // </div>
+                        return <div className="card w-96 bg-base-100 shadow-xl image-full" key={item.product_id}>
+                            <figure><Image src={item.product.image} alt={item.product.ProductName} width={500} height={500} /></figure>
+                            <div className="card-body">
+                                <h2 className="card-title">{item.product.ProductName}</h2>
+                                <p className='  font-semibold text-base-300' >{item.product.Price} x {item.product_quantity} = {item.product.Price * item.product_quantity}</p>
+                                <div className="card-actions justify-end flex items-center">
                                     <button onClick={() => handleDecremnetIncart(item.product_id)} className='btn' ><Image src={"/static/remove_FILL0_wght400_GRAD0_opsz48.svg"} alt="-" width={30} height={30} /></button>
-                                    <h2 className='px-4 rounded-lg ' >{item.product_quantity}</h2>
+                                    <h2 className='font-semibold text-xl ' >{item.product_quantity}</h2>
                                     <button className='btn' onClick={() => handleIncermentinCart(item.product_id)} ><Image src={"/static/add_FILL0_wght400_GRAD0_opsz48.svg"} alt="+" width={30} height={30} /></button>
                                 </div>
+
                             </div>
                         </div>
                     }) : ""
