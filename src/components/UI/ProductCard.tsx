@@ -9,8 +9,19 @@ import { trpc } from '../../utils/trpc';
 const ProductCard = ({ props }: { props: Product }) => {
     const { data: UserSession } = useSession()
     const router = useRouter();
-    const updateInCartMutation = trpc.cart.AddOneToCart.useMutation();
-    const addToCartMutation = trpc.cart.addtoCart.useMutation()
+    const trpcContext = trpc.useContext();
+    const updateInCartMutation = trpc.cart.AddOneToCart.useMutation({
+        onSuccess() {
+            // trpcContext.cart.getCart.invalidate({ user_id: UserSession?.user?.id || "" })
+            trpcContext.cart.getnumberofItemsInCart.invalidate({ user_id: UserSession?.user?.id || "" })
+        }
+    });
+    const addToCartMutation = trpc.cart.addtoCart.useMutation({
+        onSuccess() {
+            trpcContext.cart.getnumberofItemsInCart.invalidate({ user_id: UserSession?.user?.id || "" })
+
+        }
+    })
     const { data: cart } = trpc.cart.getUserCart.useQuery({ user_id: UserSession?.user?.id || "" });
     const handleAddToCart = async () => {
         if (!UserSession) {
