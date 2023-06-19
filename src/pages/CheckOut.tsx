@@ -2,9 +2,10 @@ import React, { useRef } from 'react'
 import { trpc } from '../utils/trpc';
 import { useSession } from 'next-auth/react';
 import toast from 'react-hot-toast';
-import { Cart } from '@prisma/client';
+import type { Cart } from '@prisma/client';
 
 const CheckOut = () => {
+    const [updateDetails, setUpdateDetails] = React.useState(false)
     //first we have to find if the user details are already present in the database or not
     //if they are present then we have to fetch them 
     //if they want to update the details first update thier details.
@@ -25,13 +26,10 @@ const CheckOut = () => {
             user_id: item.user_id
         }
     })
-    // const { data: userSession } = useSession();
-
-    // const user_id = userSession?.user?.id as string;
-    // const { data: cart } = trpc.cart.getUserCart.useQuery({ user_id: user_id });
-    // console.log({ cart });
+    const { data: UserDetailsIndb } = trpc.userdetail.getUserDetail.useQuery({ user_id: user_id })
     const addOrderDetailMutation = trpc.orderdetail.addOrderDetails.useMutation()
     const adduserDetailMutation = trpc.userdetail.addUserDetail.useMutation()
+    const updateUserDetailsMutation = trpc.userdetail.updateUserDetail.useMutation()
     const addOrderMutation = trpc.orders.addNewOrder.useMutation();
     // const orderdetailMutation = trpc.orderdetail.addOrderDetails.useMutation()
     const { data: order } = trpc.orders.getorderDetails.useQuery({ user_id: user_id })
@@ -45,6 +43,26 @@ const CheckOut = () => {
 
     const handlePlaceOrder = (e: React.FormEvent) => {
         e.preventDefault();
+        if (!UserDetailsIndb) {
+            //WE need to add user to the database
+            adduserDetailMutation.mutate({
+                user_id: user_id,
+                address: addressRef.current?.value as string,
+                city: cityRef.current?.value as string,
+                province: provinceRef.current?.value as string,
+                phoneNo: phoneNoRef.current?.value as string,
+            })
+        }
+        else if (updateDetails) {
+            updateUserDetailsMutation.mutate({
+                user_id: user_id,
+                address: addressRef.current?.value as string,
+                city: cityRef.current?.value as string,
+                province: provinceRef.current?.value as string,
+                phoneNo: phoneNoRef.current?.value as string,
+            })
+        }
+        //User details sorted now
         console.log({
             user_id: user_id,
             address: addressRef.current?.value as string,
@@ -53,14 +71,6 @@ const CheckOut = () => {
             phoneNo: phoneNoRef.current?.value as string
         });
 
-        adduserDetailMutation.mutate({
-            user_id: user_id,
-            address: addressRef.current?.value as string,
-            city: cityRef.current?.value as string,
-            province: provinceRef.current?.value as string,
-            phoneNo: phoneNoRef.current?.value as string,
-
-        })
         addOrderMutation.mutate({
             user_id: user_id,
         })
@@ -104,25 +114,54 @@ const CheckOut = () => {
     return (
         <div className='w-9/12 mx-auto my-4' >
             <h1 className='font-extrabold text-4xl ' >CheckOut</h1>
+
             <form onSubmit={handlePlaceOrder} className={"flex flex-col w-full"} >
-                <div className='flex my-2 gap-3 align-middle items-center ' >
-                    <label htmlFor="address" className='' >Shipping Address</label>
-                    <input type="text" name="address" id="address" ref={addressRef} className="input flex-grow p-3 bg-base-200" />
-                </div>
-                <div className='flex flex-wrap gap-2 flex-col' >
-                    <div className='flex items-center  w-full justify-between ' >
-                        <label htmlFor="city" >City:</label>
-                        <input type="text" name="city" id="city" minLength={4} ref={cityRef} className="input bg-base-200" />
+                {!UserDetailsIndb ?
+                    <div>
+
+                        <div className='flex my-2 gap-3 align-middle items-center ' >
+                            <label htmlFor="address" className='' >Shipping Address</label>
+                            <input type="text" name="address" id="address" ref={addressRef} className="input flex-grow p-3 bg-base-200" />
+                        </div>
+                        <div className='flex flex-wrap gap-2 flex-col' >
+                            <div className='flex items-center  w-full justify-between ' >
+                                <label htmlFor="city" >City:</label>
+                                <input type="text" name="city" id="city" minLength={4} ref={cityRef} className="input bg-base-200" />
+                            </div>
+                            <div className='flex items-center w-full  justify-between ' >
+                                <label htmlFor="city" >Province:</label>
+                                <input type="text" name="city" id="city" minLength={4} ref={provinceRef} className="input bg-base-200" />
+                            </div>
+                            <div className='flex items-center w-full  justify-between ' >
+                                <label htmlFor="city" >Cell:</label>
+                                <input type="text" name="city" id="city" minLength={7} ref={phoneNoRef} className="input bg-base-200" />
+                            </div>
+                        </div>
+                    </div> :
+                    <div>
+
+                        <div className='flex my-2 gap-3 align-middle items-center ' >
+                            <label htmlFor="address" className='' >Shipping Address</label>
+                            <input type="text" value={UserDetailsIndb.address} name="address" id="address" ref={addressRef} className="input flex-grow p-3 bg-base-200" disabled={!updateDetails} />
+                        </div>
+                        <div className='flex flex-wrap gap-2 flex-col' >
+                            <div className='flex items-center  w-full justify-between ' >
+                                <label htmlFor="city" >City:</label>
+                                <input type="text" name="city" value={UserDetailsIndb.city} id="city" minLength={4} ref={cityRef} className="input bg-base-200" disabled={!updateDetails} />
+                            </div>
+                            <div className='flex items-center w-full  justify-between ' >
+                                <label htmlFor="city" >Province:</label>
+                                <input type="text" name="province" value={UserDetailsIndb.province} id="province" minLength={4} ref={provinceRef} className="input bg-base-200" disabled={!updateDetails} />
+                            </div>
+                            <div className='flex items-center w-full  justify-between ' >
+                                <label htmlFor="city" >Cell:</label>
+                                <input disabled={!updateDetails} type="text" value={UserDetailsIndb.phoneNo} name="cell" id="cell" minLength={7} ref={phoneNoRef} className="input bg-base-200" />
+                            </div>
+                            <div className='flex' onClick={() => setUpdateDetails(true)} ><button className='btn float-right' >Edit Details</button></div>
+                        </div>
+
                     </div>
-                    <div className='flex items-center w-full  justify-between ' >
-                        <label htmlFor="city" >Province:</label>
-                        <input type="text" name="city" id="city" minLength={4} ref={provinceRef} className="input bg-base-200" />
-                    </div>
-                    <div className='flex items-center w-full  justify-between ' >
-                        <label htmlFor="city" >Cell:</label>
-                        <input type="text" name="city" id="city" minLength={7} ref={phoneNoRef} className="input bg-base-200" />
-                    </div>
-                </div>
+                }
                 <div className='w-full ' >
                     {
                         cartWithProducts ? cartWithProducts.map((item) => {
