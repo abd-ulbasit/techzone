@@ -1,5 +1,4 @@
 import { userDetailRouter } from "./userDetail";
-import { ordersDetailsRouter } from "./ordersdetails";
 import { productRouter } from "./product";
 import { router } from "../trpc";
 import { authRouter } from "./auth";
@@ -13,7 +12,6 @@ export const appRouter = router({
   categories: catergoriesRouter,
   products: productRouter,
   cart: cartRouter,
-  orderdetail: ordersDetailsRouter,
   orders: ordersRouter,
   userdetail: userDetailRouter,
 });

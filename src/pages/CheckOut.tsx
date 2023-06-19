@@ -17,7 +17,6 @@ const CheckOut = () => {
     const user_id = userSession?.user?.id as string;
     //this cart will have all the products fethced with in it
     const { data: cartWithProducts } = trpc.cart.getCartWithProducts.useQuery({ user_id: user_id })
-    // console.log({ cartWithProducts });
     //extracting the cart from the cartWithProducts
     const cart: Cart[] | undefined = cartWithProducts?.map((item) => {
         return {
@@ -37,13 +36,8 @@ const CheckOut = () => {
         }
     });
     const { data: UserDetailsIndb } = trpc.userdetail.getUserDetail.useQuery({ user_id: user_id })
-    // const addOrderDetailMutation = trpc.orderdetail.addOrderDetails.useMutation()
     const adduserDetailMutation = trpc.userdetail.addUserDetail.useMutation()
     const updateUserDetailsMutation = trpc.userdetail.updateUserDetail.useMutation()
-    // const addOrderMutation = trpc.orders.addNewOrder.useMutation();
-    // const orderdetailMutation = trpc.orderdetail.addOrderDetails.useMutation()
-    const { data: order } = trpc.orders.getorderDetails.useQuery({ user_id: user_id })
-    console.log(order);
     const emptyCartM = trpc.cart.emptyCart.useMutation()
 
     const addressRef = useRef<HTMLInputElement>(null);
