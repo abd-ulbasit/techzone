@@ -1,6 +1,7 @@
 import React, { useRef } from 'react'
 import { trpc } from '../utils/trpc';
 import { useSession } from 'next-auth/react';
+import toast from 'react-hot-toast';
 
 const CheckOut = () => {
     const { data: userSession } = useSession();
@@ -25,7 +26,7 @@ const CheckOut = () => {
     const provinceRef = useRef<HTMLInputElement>(null);
     const phoneNoRef = useRef<HTMLInputElement>(null);
 
-    const handleAddUserDetails = (e: React.FormEvent) => {
+    const handlePlaceOrder = (e: React.FormEvent) => {
         e.preventDefault();
         console.log({
             user_id: user_id,
@@ -70,7 +71,12 @@ const CheckOut = () => {
         }
         emptyCartM.mutate({ user_id: user_id })
         // console.log(addressRef.current?.value);
-        alert("Your Order has been placed . GO to homePage")
+        //? This should run on successful order placement
+        toast.success("Your Order has been placed")
+        setTimeout(() => {
+            window.location.href = "/"
+        }
+            , 2000)
     }
     const totalpersamething = cartX?.map((item) => {
         return item.product_quantity * item.product.Price
@@ -80,8 +86,8 @@ const CheckOut = () => {
     }, 0)
     return (
         <div className='w-9/12 mx-auto my-4' >
-            <h1 className='font-extrabold text-4xl text-primary-content' >CheckOut</h1>
-            <form onSubmit={handleAddUserDetails} className={"flex flex-col w-full"} >
+            <h1 className='font-extrabold text-4xl ' >CheckOut</h1>
+            <form onSubmit={handlePlaceOrder} className={"flex flex-col w-full"} >
                 <div className='flex my-2 gap-3 align-middle items-center ' >
                     <label htmlFor="address" className='' >Shipping Address</label>
                     <input type="text" name="address" id="address" ref={addressRef} className="input flex-grow p-3 bg-base-200" />

@@ -90,8 +90,8 @@ const Cart = () => {
             </div>
             {userSession &&
                 <div className=' fixed right-12 bottom-12' >
-                    <div className=' mx-auto text-center text-lg font-bold text-red-600 py-4 rounded-t-md' >{grandtotal} PKRs</div>
-                    <Link href={`/CheckOut`} className=' p-3 rounded-sm hover:scale-105  hover:rounded-md ' >Proceed to Checkout </Link>
+                    <div className='text-center  bg-primary text-base-300 py-2' >{grandtotal} PKRs</div>
+                    <Link href={`/CheckOut`} className=' btn' >Proceed to Checkout </Link>
                 </div>}
         </div>
     )
