@@ -114,6 +114,9 @@ export const cartRouter = router({
       })
     )
     .query(async ({ ctx, input }) => {
+      if (input.user_id == "") {
+        return 0;
+      }
       const cart = await ctx.prisma.cart.findMany({
         where: {
           user_id: input.user_id,
