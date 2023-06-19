@@ -79,7 +79,7 @@ model Orders {
   order_id     Int            @id @unique(map: "order_id_UNIQUE") @default(autoincrement())
   user_id      String
   order_date   DateTime       @db.Date
-  delivered    Int            @db.TinyInt
+  delivered    Int            @default(0) @db.TinyInt
   user         User           @relation(fields: [user_id], references: [id], onDelete: Cascade)
   order_detail Order_detail[]
 
