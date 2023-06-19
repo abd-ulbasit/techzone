@@ -26,11 +26,21 @@ const CheckOut = () => {
             user_id: item.user_id
         }
     })
+    const addOrderMutation = trpc.orders.addOrder.useMutation({
+        onSuccess() {
+            emptyCartM.mutate({ user_id: user_id })
+            toast.success("Your Order has been placed")
+            setTimeout(() => {
+                window.location.href = "/"
+            }
+                , 2000)
+        }
+    });
     const { data: UserDetailsIndb } = trpc.userdetail.getUserDetail.useQuery({ user_id: user_id })
     const addOrderDetailMutation = trpc.orderdetail.addOrderDetails.useMutation()
     const adduserDetailMutation = trpc.userdetail.addUserDetail.useMutation()
     const updateUserDetailsMutation = trpc.userdetail.updateUserDetail.useMutation()
-    const addOrderMutation = trpc.orders.addNewOrder.useMutation();
+    // const addOrderMutation = trpc.orders.addNewOrder.useMutation();
     // const orderdetailMutation = trpc.orderdetail.addOrderDetails.useMutation()
     const { data: order } = trpc.orders.getorderDetails.useQuery({ user_id: user_id })
     console.log(order);
@@ -63,17 +73,16 @@ const CheckOut = () => {
             })
         }
         //User details sorted now
-        console.log({
-            user_id: user_id,
-            address: addressRef.current?.value as string,
-            city: cityRef.current?.value as string,
-            province: provinceRef.current?.value as string,
-            phoneNo: phoneNoRef.current?.value as string
-        });
+        //now we have to add order  with orderdetails to the database
+        if (!cart) {
+            toast.error("Cart is empty")
+        } else {
 
-        addOrderMutation.mutate({
-            user_id: user_id,
-        })
+            addOrderMutation.mutate(cart)
+        }
+        // addOrderMutation.mutate({
+        //     user_id: user_id,
+        // })
         // if (cart) {
 
         //     for (const item of cart) {
@@ -84,26 +93,22 @@ const CheckOut = () => {
         //         })
         //     }
         // }
-        if (cart) {
+        // if (cart) {
 
-            for (const item of cart) {
+        //     for (const item of cart) {
 
-                addOrderDetailMutation.mutate({
-                    order_id: order?.order_id as number,
-                    product_id: item.product_id,
-                    quantity: item.product_quantity
+        //         addOrderDetailMutation.mutate({
+        //             order_id: order?.order_id as number,
+        //             product_id: item.product_id,
+        //             quantity: item.product_quantity
 
-                })
-            }
-        }
-        emptyCartM.mutate({ user_id: user_id })
+        //         })
+        //     }
+        // }
+        // emptyCartM.mutate({ user_id: user_id })
         // console.log(addressRef.current?.value);
         //? This should run on successful order placement
-        toast.success("Your Order has been placed")
-        setTimeout(() => {
-            window.location.href = "/"
-        }
-            , 2000)
+
     }
     const totalpersamething = cartWithProducts?.map((item) => {
         return item.product_quantity * item.product.Price
@@ -157,6 +162,8 @@ const CheckOut = () => {
                                 <label htmlFor="city" >Cell:</label>
                                 <input disabled={!updateDetails} type="text" value={UserDetailsIndb.phoneNo} name="cell" id="cell" minLength={7} ref={phoneNoRef} className="input bg-base-200" />
                             </div>
+                            {/*//! Fix this
+                            When this button is clicked, automatically the order is getting placed */}
                             <div className='flex' onClick={() => setUpdateDetails(true)} ><button className='btn float-right' >Edit Details</button></div>
                         </div>
 
