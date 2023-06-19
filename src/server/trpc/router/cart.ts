@@ -132,7 +132,7 @@ export const cartRouter = router({
       //     return item.
       // })
     }),
-  getCart: publicProcedure
+  getCartWithProducts: publicProcedure
     .input(z.object({ user_id: z.string() }))
     .query(async ({ ctx, input }) => {
       return await ctx.prisma.cart.findMany({

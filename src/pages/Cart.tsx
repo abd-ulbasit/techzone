@@ -10,21 +10,21 @@ const Cart = () => {
     const { data: userSession } = useSession();
     const user_id = userSession?.user?.id as string;
     //this cart will have all the products fethced with in it
-    const { data: cart } = trpc.cart.getCart.useQuery({ user_id: user_id })
+    const { data: cart } = trpc.cart.getCartWithProducts.useQuery({ user_id: user_id })
     const trpcContext = trpc.useContext();
 
     // console.log(cart);
     // const getUserCart
     const incrementIncartMutation = trpc.cart.AddOneToCart.useMutation({
         onSuccess(input) {
-            trpcContext.cart.getCart.invalidate({ user_id: user_id });
+            trpcContext.cart.getCartWithProducts.invalidate({ user_id: user_id });
             trpcContext.cart.getnumberofItemsInCart.invalidate({ user_id: input.user_id })
             toast.success("Item added to cart")
         }
     });
     const cartDecrementMutation = trpc.cart.decrementFromCart.useMutation({
         onSuccess(input) {
-            trpcContext.cart.getCart.invalidate({ user_id: user_id });
+            trpcContext.cart.getCartWithProducts.invalidate({ user_id: user_id });
             trpcContext.cart.getnumberofItemsInCart.invalidate({ user_id: input.user_id })
             toast.success("Item removed from cart")
         }
@@ -32,7 +32,7 @@ const Cart = () => {
     const removeFromCartMutation = trpc.cart.RemoveFromCart.useMutation({
         onSuccess(input) {
 
-            trpcContext.cart.getCart.invalidate({ user_id: input.user_id })
+            trpcContext.cart.getCartWithProducts.invalidate({ user_id: input.user_id })
             trpcContext.cart.getnumberofItemsInCart.invalidate({ user_id: input.user_id })
             toast.success("Item removed from cart")
         }

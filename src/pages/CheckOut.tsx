@@ -2,18 +2,35 @@ import React, { useRef } from 'react'
 import { trpc } from '../utils/trpc';
 import { useSession } from 'next-auth/react';
 import toast from 'react-hot-toast';
+import { Cart } from '@prisma/client';
 
 const CheckOut = () => {
+    //first we have to find if the user details are already present in the database or not
+    //if they are present then we have to fetch them 
+    //if they want to update the details first update thier details.
+    //if they are not present then we have to show the form and then add them to the database
+    //after that we have to add the order details to the database
+    //after that we have to empty the cart
+
     const { data: userSession } = useSession();
     const user_id = userSession?.user?.id as string;
     //this cart will have all the products fethced with in it
-    const { data: cartX } = trpc.cart.getCart.useQuery({ user_id: user_id })
+    const { data: cartWithProducts } = trpc.cart.getCartWithProducts.useQuery({ user_id: user_id })
+    console.log({ cartWithProducts });
+    //extracting the cart from the cartWithProducts
+    const cart: Cart[] | undefined = cartWithProducts?.map((item) => {
+        return {
+            product_id: item.product_id,
+            product_quantity: item.product_quantity,
+            user_id: item.user_id
+        }
+    })
     // const { data: userSession } = useSession();
 
     // const user_id = userSession?.user?.id as string;
-    const { data: cart } = trpc.cart.getUserCart.useQuery({ user_id: user_id });
-    // console.log(cart);
-    const addOrderDetailM = trpc.orderdetail.addOrderDetails.useMutation()
+    // const { data: cart } = trpc.cart.getUserCart.useQuery({ user_id: user_id });
+    // console.log({ cart });
+    const addOrderDetailMutation = trpc.orderdetail.addOrderDetails.useMutation()
     const adduserDetailMutation = trpc.userdetail.addUserDetail.useMutation()
     const addOrderMutation = trpc.orders.addNewOrder.useMutation();
     // const orderdetailMutation = trpc.orderdetail.addOrderDetails.useMutation()
@@ -61,7 +78,7 @@ const CheckOut = () => {
 
             for (const item of cart) {
 
-                addOrderDetailM.mutate({
+                addOrderDetailMutation.mutate({
                     order_id: order?.order_id as number,
                     product_id: item.product_id,
                     quantity: item.product_quantity
@@ -78,7 +95,7 @@ const CheckOut = () => {
         }
             , 2000)
     }
-    const totalpersamething = cartX?.map((item) => {
+    const totalpersamething = cartWithProducts?.map((item) => {
         return item.product_quantity * item.product.Price
     })
     const grandtotal = totalpersamething?.reduce((a, b) => {
@@ -108,7 +125,7 @@ const CheckOut = () => {
                 </div>
                 <div className='w-full ' >
                     {
-                        cartX ? cartX.map((item) => {
+                        cartWithProducts ? cartWithProducts.map((item) => {
                             return <div key={item.product_id} className="flex flex-col" >
                                 <div  >
                                     <p className='font-medium italic' >{item.product.ProductName}</p>
