@@ -50,7 +50,7 @@ const ProductCard = ({ props }: { props: Product }) => {
         router.push(`/productdetail/${props.pid}`)
     }
     return (
-        <div className="card card-compact w-96 bg-base-100 shadow-xl">
+        <div className="card card-compact w-96 bg-base-100 shadow-xl -z-10">
             <figure><Image src={props.image} alt={props.ProductName} width={400} height={400} /></figure>
             <div className="card-body">
                 <h2 className="card-title line-clamp-3">{props.ProductName}</h2>
