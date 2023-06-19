@@ -5,6 +5,7 @@ import Image from 'next/image'
 import { useRouter } from 'next/router';
 import React from 'react'
 import { trpc } from '../../utils/trpc';
+import toast from 'react-hot-toast';
 
 const ProductCard = ({ props }: { props: Product }) => {
     const { data: UserSession } = useSession()
@@ -14,18 +15,20 @@ const ProductCard = ({ props }: { props: Product }) => {
         onSuccess() {
             // trpcContext.cart.getCart.invalidate({ user_id: UserSession?.user?.id || "" })
             trpcContext.cart.getnumberofItemsInCart.invalidate({ user_id: UserSession?.user?.id || "" })
+            toast.success("Item Added to Cart")
         }
     });
     const addToCartMutation = trpc.cart.addtoCart.useMutation({
         onSuccess() {
             trpcContext.cart.getnumberofItemsInCart.invalidate({ user_id: UserSession?.user?.id || "" })
+            toast.success("Item Added to Cart")
 
         }
     })
     const { data: cart } = trpc.cart.getUserCart.useQuery({ user_id: UserSession?.user?.id || "" });
     const handleAddToCart = async () => {
         if (!UserSession) {
-            alert("LogIn to Add to Cart")
+            toast.error("LogIn to Add to Cart")
             return;
         }
         const user_id = UserSession.user?.id as string;

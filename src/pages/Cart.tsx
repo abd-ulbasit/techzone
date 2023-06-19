@@ -4,6 +4,7 @@ import { useSession } from 'next-auth/react';
 // import { Cart  } from '@prisma/client';
 import Image from 'next/image';
 import Link from 'next/link';
+import toast from 'react-hot-toast';
 
 const Cart = () => {
     const { data: userSession } = useSession();
@@ -15,19 +16,25 @@ const Cart = () => {
     // console.log(cart);
     // const getUserCart
     const incrementIncartMutation = trpc.cart.AddOneToCart.useMutation({
-        onSuccess() {
+        onSuccess(input) {
             trpcContext.cart.getCart.invalidate({ user_id: user_id });
+            trpcContext.cart.getnumberofItemsInCart.invalidate({ user_id: input.user_id })
+            toast.success("Item added to cart")
         }
     });
     const cartDecrementMutation = trpc.cart.decrementFromCart.useMutation({
-        onSuccess() {
+        onSuccess(input) {
             trpcContext.cart.getCart.invalidate({ user_id: user_id });
+            trpcContext.cart.getnumberofItemsInCart.invalidate({ user_id: input.user_id })
+            toast.success("Item removed from cart")
         }
     });
     const removeFromCartMutation = trpc.cart.RemoveFromCart.useMutation({
         onSuccess(input) {
-            trpcContext.cart.invalidate();
+
             trpcContext.cart.getCart.invalidate({ user_id: input.user_id })
+            trpcContext.cart.getnumberofItemsInCart.invalidate({ user_id: input.user_id })
+            toast.success("Item removed from cart")
         }
     })
     // const cartType = typeof cart
@@ -35,6 +42,7 @@ const Cart = () => {
         incrementIncartMutation.mutate({
             user_id: user_id, product_id: product_id
         })
+        // toast.success("Item added to cart")
     }
     const handleDecremnetIncart = (product_id: number) => {
         // if (cart?.find((item) => item.product_id === product_id)?.product_quantity <= 0) {
@@ -45,7 +53,7 @@ const Cart = () => {
             removeFromCartMutation.mutate({ user_id: user_id, product_id: product_id })
 
         } else if (cart?.find((item) => item.product_id === product_id)?.product_quantity === 0) {
-            alert("you can not remove more items")
+            toast.error("you can not remove more items")
             return;
         } else {
             cartDecrementMutation.mutate({
