@@ -10,11 +10,26 @@ const Cart = () => {
     const user_id = userSession?.user?.id as string;
     //this cart will have all the products fethced with in it
     const { data: cart } = trpc.cart.getCart.useQuery({ user_id: user_id })
+    const trpcContext = trpc.useContext();
+
     // console.log(cart);
     // const getUserCart
-    const incrementIncartMutation = trpc.cart.AddOneToCart.useMutation();
-    const cartDecrementMutation = trpc.cart.decrementFromCart.useMutation();
-    const removeFromCartMutation = trpc.cart.RemoveFromCart.useMutation()
+    const incrementIncartMutation = trpc.cart.AddOneToCart.useMutation({
+        onSuccess() {
+            trpcContext.cart.getCart.invalidate({ user_id: user_id });
+        }
+    });
+    const cartDecrementMutation = trpc.cart.decrementFromCart.useMutation({
+        onSuccess() {
+            trpcContext.cart.getCart.invalidate({ user_id: user_id });
+        }
+    });
+    const removeFromCartMutation = trpc.cart.RemoveFromCart.useMutation({
+        onSuccess(input) {
+            trpcContext.cart.invalidate();
+            trpcContext.cart.getCart.invalidate({ user_id: input.user_id })
+        }
+    })
     // const cartType = typeof cart
     const handleIncermentinCart = (product_id: number) => {
         incrementIncartMutation.mutate({
@@ -46,7 +61,7 @@ const Cart = () => {
     }, 0)
     return (
         <div>
-        <div className='flex flex-wrap gap-6 justify-center'>
+            <div className='flex flex-wrap gap-6 justify-center'>
                 {
                     cart ? cart.map((item) => {
                         return <div className="card w-96 bg-base-100 shadow-xl image-full" key={item.product_id}>
@@ -55,9 +70,9 @@ const Cart = () => {
                                 <h2 className="card-title">{item.product.ProductName}</h2>
                                 <p className='  font-semibold text-base-300' >{item.product.Price} x {item.product_quantity} = {item.product.Price * item.product_quantity}</p>
                                 <div className="card-actions justify-end flex items-center">
-                                    <button onClick={() => handleDecremnetIncart(item.product_id)} className='btn' ><Image src={"/static/remove_FILL0_wght400_GRAD0_opsz48.svg"} alt="-" width={30} height={30} /></button>
+                                    <button onClick={() => handleDecremnetIncart(item.product_id)} className='btn btn-ghost' ><Image src={"/static/remove_FILL0_wght400_GRAD0_opsz48.svg"} alt="-" width={30} height={30} /></button>
                                     <h2 className='font-semibold text-xl ' >{item.product_quantity}</h2>
-                                    <button className='btn' onClick={() => handleIncermentinCart(item.product_id)} ><Image src={"/static/add_FILL0_wght400_GRAD0_opsz48.svg"} alt="+" width={30} height={30} /></button>
+                                    <button className='btn btn-ghost' onClick={() => handleIncermentinCart(item.product_id)} ><Image src={"/static/add_FILL0_wght400_GRAD0_opsz48.svg"} alt="+" width={30} height={30} /></button>
                                 </div>
 
                             </div>
