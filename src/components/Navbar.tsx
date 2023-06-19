@@ -1,82 +1,77 @@
-import type { ReactNode } from 'react'
 import { trpc } from '../utils/trpc'
-import { FaShoppingCart } from "react-icons/fa"
 import Link from 'next/link';
 import { signIn, signOut, useSession } from 'next-auth/react';
 import Image from 'next/image';
-import type { Session } from 'next-auth';
-const Navbar = ({ children }: { children: ReactNode }) => {
+const Navbar = () => {
     const { data: sessionData } = useSession();
     const { data: catogoryData } = trpc.categories.getCatogoires.useQuery();
+    const { data: noOfItemsInCart } = trpc.cart.getnumberofItemsInCart.useQuery({
+        user_id: sessionData?.user?.id ? sessionData?.user?.id : ""
+    })
+
     return (
         <>
-            <div className=' flex  w-full items-center justify-between  ' >
-                <div className='p-4  ' ><Link href={"/"} >TECHZONE</Link></div>
+            <div className="navbar bg-base-100 z-20">
+                <div className="flex-none">
+                    <div className="drawer">
+                        <input id="my-drawer" type="checkbox" className="drawer-toggle" />
+                        <div className="drawer-content">
+                            <label htmlFor="my-drawer" className="btn  drawer-button btn-ghost flex flex-row  ">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className=" w-5 h-5 stroke-current"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>Categories</label>
+                        </div>
+                        <div className="drawer-side z-50">
+                            <label htmlFor="my-drawer" className="drawer-overlay"></label>
+                            <ul className="menu p-4 w-80 h-full text-base-content bg-base-100">
 
-                <div className="drawer">
-                    <input id="my-drawer" type="checkbox" className="drawer-toggle" />
-                    <div className="drawer-content">
-                        {/* Page content here */}
-                        <label htmlFor="my-drawer" className="btn  drawer-button">Categories</label>
+                                {catogoryData ? catogoryData.map((category) => {
+                                    return <li key={category.id} className={" btn btn-outline my-1 "} >
+                                        <Link href={`/categories/${category.category_name}`} >
+                                            <input id="my-drawer" type="checkbox" className="drawer-toggle" />
+                                            {category.category_name}
+                                        </Link>
+                                    </li>
+                                }) : ""
+                                }
+                            </ul>
+                        </div>
                     </div>
-                    <div className="drawer-side z-50">
-                        <label htmlFor="my-drawer" className="drawer-overlay"></label>
-                        <ul className="menu p-4 w-80 h-full text-base-content bg-base-100">
-                            {/* Sidebar content here */}
+                </div>
+                <div className="flex-1">
+                    <Link href={"/"} className="btn btn-ghost normal-case text-xl">TechZone</Link>
+                </div>
+                <div className="flex-none">
+                    <div className="dropdown dropdown-end">
+                        <label tabIndex={0} className="btn btn-ghost btn-circle">
+                            <div className="indicator">
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+                                <span className="badge badge-sm indicator-item">{noOfItemsInCart}</span>
+                            </div>
+                        </label>
+                        <div tabIndex={0} className="mt-3 card card-compact dropdown-content w-52 bg-base-100 shadow">
+                            <div className="card-body">
+                                <span className="font-bold text-lg">{noOfItemsInCart} {noOfItemsInCart == 1 ? "Item" : "Items"}</span>
+                                {/* <span className="text-info">Subtotal: $999</span> */}
+                                <div className="card-actions">
+                                    <Link href={"/Cart"} className="btn btn-primary btn-block">View cart</Link>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="dropdown dropdown-end">
+                        <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
+                            <div className="w-10 rounded-full">
+                                <Image src={sessionData?.user?.image ? sessionData.user.image : '/static/profilepic.png'} width={40} height={40} alt='ProfilePic' />
+                            </div>
+                        </label>
+                        <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52">
+                            <li><button onClick={() => sessionData ? signOut() : signIn()} className=""  > {sessionData ? "SignOut" : "SignIn"} </button></li>
 
-                            {catogoryData ? catogoryData.map((category) => {
-                                return <li key={category.id} className={" btn btn-outline my-1 "} >
-                                    <Link href={`/categories/${category.category_name}`} >
-                                        <input id="my-drawer" type="checkbox" className="drawer-toggle" />
-                                        {category.category_name}
-                                    </Link>
-                                </li>
-                            }) : ""
-                            }
                         </ul>
                     </div>
                 </div>
-                <div className='flex'>
-
-                </div>
-                <div className='flex gap-3 items-center '>
-
-                    {sessionData ?
-                        <div className='rounded-full w-10 h-10' >
-                            <Image src={sessionData.user?.image || " "} alt='profilePic' width={40} height={40} className="rounded-full " />
-                        </div> : <div className='w-10 h-10 rounded-full ' >
-                            <Image src="/static/profilepic.png" alt="" width="40" height="40" className='rounded-full' />
-                        </div>
-                    }
-
-                    <button onClick={() => sessionData ? signOut() : signIn()} className="btn"  > {sessionData ? "SignOut" : "SignIn"} </button>
-                </div>
-                <Cart session={sessionData} />
             </div>
-            {children}
         </>
+
     )
 }
-
 export default Navbar
-
-
-
-const Cart = ({ session }: { session: Session | null }) => {
-    const user_id = session?.user?.id;
-    if (!user_id) return null;
-    const { data: noOfItemsInCart } = trpc.cart.getnumberofItemsInCart.useQuery({
-        user_id
-    })
-
-    return (<Link href={"/Cart"} className="relative pl-2 pr-6 mr-4 " >
-        <FaShoppingCart className="text-2xl" />
-        {
-            noOfItemsInCart && noOfItemsInCart > 0 ?
-                <div className='bg-base-200 p-1 text-primary  absolute -top-4 right-1 rounded-full text-sm' >
-                    {noOfItemsInCart}
-                </div> : null
-        }
-    </Link>)
-
-}
