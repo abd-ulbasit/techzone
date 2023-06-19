@@ -17,7 +17,7 @@ const CheckOut = () => {
     const user_id = userSession?.user?.id as string;
     //this cart will have all the products fethced with in it
     const { data: cartWithProducts } = trpc.cart.getCartWithProducts.useQuery({ user_id: user_id })
-    console.log({ cartWithProducts });
+    // console.log({ cartWithProducts });
     //extracting the cart from the cartWithProducts
     const cart: Cart[] | undefined = cartWithProducts?.map((item) => {
         return {
@@ -37,7 +37,7 @@ const CheckOut = () => {
         }
     });
     const { data: UserDetailsIndb } = trpc.userdetail.getUserDetail.useQuery({ user_id: user_id })
-    const addOrderDetailMutation = trpc.orderdetail.addOrderDetails.useMutation()
+    // const addOrderDetailMutation = trpc.orderdetail.addOrderDetails.useMutation()
     const adduserDetailMutation = trpc.userdetail.addUserDetail.useMutation()
     const updateUserDetailsMutation = trpc.userdetail.updateUserDetail.useMutation()
     // const addOrderMutation = trpc.orders.addNewOrder.useMutation();
@@ -147,29 +147,32 @@ const CheckOut = () => {
 
                         <div className='flex my-2 gap-3 align-middle items-center ' >
                             <label htmlFor="address" className='' >Shipping Address</label>
-                            <input type="text" value={UserDetailsIndb.address} name="address" id="address" ref={addressRef} className="input flex-grow p-3 bg-base-200" disabled={!updateDetails} />
+                            <input type="text" defaultValue={UserDetailsIndb.address} name="address" id="address" ref={addressRef} className="input flex-grow p-3 bg-base-200" disabled={!updateDetails} />
                         </div>
                         <div className='flex flex-wrap gap-2 flex-col' >
                             <div className='flex items-center  w-full justify-between ' >
                                 <label htmlFor="city" >City:</label>
-                                <input type="text" name="city" value={UserDetailsIndb.city} id="city" minLength={4} ref={cityRef} className="input bg-base-200" disabled={!updateDetails} />
+                                <input type="text" name="city" defaultValue={UserDetailsIndb.city} id="city" minLength={4} ref={cityRef} className="input bg-base-200" disabled={!updateDetails} />
                             </div>
                             <div className='flex items-center w-full  justify-between ' >
                                 <label htmlFor="city" >Province:</label>
-                                <input type="text" name="province" value={UserDetailsIndb.province} id="province" minLength={4} ref={provinceRef} className="input bg-base-200" disabled={!updateDetails} />
+                                <input type="text" name="province" defaultValue={UserDetailsIndb.province} id="province" minLength={4} ref={provinceRef} className="input bg-base-200" disabled={!updateDetails} />
                             </div>
                             <div className='flex items-center w-full  justify-between ' >
                                 <label htmlFor="city" >Cell:</label>
-                                <input disabled={!updateDetails} type="text" value={UserDetailsIndb.phoneNo} name="cell" id="cell" minLength={7} ref={phoneNoRef} className="input bg-base-200" />
+                                <input disabled={!updateDetails} type="text" defaultValue={UserDetailsIndb.phoneNo} name="cell" id="cell" minLength={7} ref={phoneNoRef} className="input bg-base-200" />
                             </div>
                             {/*//! Fix this
                             When this button is clicked, automatically the order is getting placed */}
-                            <div className='flex' onClick={() => setUpdateDetails(true)} ><button className='btn float-right' >Edit Details</button></div>
+                            {!updateDetails ?
+                                <div className='flex' onClick={(e) => { e.preventDefault(); setUpdateDetails(true) }} ><button className='btn float-right' >Edit Details</button></div>
+                                : ""}
                         </div>
 
                     </div>
                 }
-                <div className='w-full ' >
+                <div className='w-full mt-2' >
+                    <h2 className='text-3xl font-semibold' >Order Detail</h2>
                     {
                         cartWithProducts ? cartWithProducts.map((item) => {
                             return <div key={item.product_id} className="flex flex-col" >
