@@ -25,4 +25,36 @@ export const userDetailRouter = router({
         },
       });
     }),
+  getUserDetail: publicProcedure
+    .input(z.object({ user_id: z.string() }))
+    .query(async ({ ctx, input }) => {
+      return await ctx.prisma.user_details.findFirst({
+        where: {
+          user_id: input.user_id,
+        },
+      });
+    }),
+  updateUserDetail: publicProcedure
+    .input(
+      z.object({
+        user_id: z.string(),
+        address: z.string(),
+        city: z.string(),
+        province: z.string(),
+        phoneNo: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.prisma.user_details.update({
+        where: {
+          user_id: input.user_id,
+        },
+        data: {
+          address: input.address,
+          city: input.city,
+          province: input.province,
+          phoneNo: input.phoneNo,
+        },
+      });
+    }),
 });
