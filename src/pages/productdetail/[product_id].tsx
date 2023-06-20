@@ -4,23 +4,30 @@ import { trpc } from '../../utils/trpc';
 import Image from 'next/image';
 import ProductCard from '../../components/UI/ProductCard';
 import { useSession } from 'next-auth/react';
+import toast from 'react-hot-toast';
 
 const ProductDetail = () => {
     const { data: UserSession } = useSession()
     const router = useRouter();
     const { product_id } = router.query;
     const ProuductId = product_id as string;
-    const updateInCartMutation = trpc.cart.AddOneToCart.useMutation();
-    const addToCartMutation = trpc.cart.addtoCart.useMutation()
+    const trpcContext = trpc.useContext();
+    const updateInCartMutation = trpc.cart.AddOneToCart.useMutation({
+        onSuccess(input) {
+            trpcContext.cart.getnumberofItemsInCart.invalidate({ user_id: input.user_id })
+            toast.success("Item added to cart")
+        }
+    });
+    const addToCartMutation = trpc.cart.addtoCart.useMutation({
+        onSuccess(input) {
+            trpcContext.cart.getnumberofItemsInCart.invalidate({ user_id: input.user_id })
+            toast.success("Item added to cart")
+        }
+    })
     const { data: cart } = trpc.cart.getUserCart.useQuery({ user_id: UserSession?.user?.id || "" });
     const productIdInNumber = parseInt(ProuductId || "-1");
     const { data: product } = trpc.products.getProductwithDetails.useQuery({ product_id: productIdInNumber })
     const { data: similarProducts } = trpc.products.getsimilarProducts.useQuery({ category_id: product?.category_Id || -1 })
-    // console.log(similarProducts);
-    // const handleAddToCart = () => {
-    //     // console.log("added");
-
-    // }
     const handleAddToCart = async (pid: number) => {
         if (!UserSession) {
             alert("LogIn to Add to Cart")
@@ -41,12 +48,12 @@ const ProductDetail = () => {
     }
     return (
         <div>
-            <div className='flex gap-4 mx-auto my-6 w-3/4 ' >
-                <div className='basis-1/2 border' ><Image src={product?.image || ""} alt={product?.ProductName || ""} width={500} height={500} /></div>
+            <div className='flex flex-col gap-4 mx-auto my-6 w-3/4 md:flex-row  ' >
+                <div className='' ><Image src={product?.image || ""} alt={product?.ProductName || ""} width={500} height={500} /></div>
                 <div className='basis-1/2'>
                     <h2 className='font-bold text-3xl py-2' >{product?.ProductName}</h2>
-                    <div className='italic' >Rating: {product?.p_rating} / 5</div>
-                    <div className='text-lg'>{product?.full_description}</div>
+                    <div className='italic badge' >Rating: {product?.p_rating} / 5</div>
+                    <div className='text-primaary-content'>{product?.full_description}</div>
                     <div className='italic text-lg ' >Only <span className='font-bold'>{product?.quanity_in_inventory}</span> Remaining</div>
                     <div className='font-bold ' >PKRs <span className='text-red-600 text-xl' >{product?.Price}</span></div>
                     <button className="btn" onClick={() => handleAddToCart(product?.pid || 0)} >
