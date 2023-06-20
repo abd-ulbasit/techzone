@@ -8,10 +8,9 @@ const Navbar = ({ children }: { children: React.ReactNode }) => {
     const { data: noOfItemsInCart } = trpc.cart.getnumberofItemsInCart.useQuery({
         user_id: sessionData?.user?.id ? sessionData?.user?.id : ""
     })
-
     return (
         <>
-            <div className="navbar bg-base-100 z-20 fixed ">
+            <div className="navbar bg-base-200 bg-opacity-60 z-20 fixed backdrop-blur-md">
                 <div className="flex-none">
                     <div className="drawer">
                         <input id="my-drawer" type="checkbox" className="drawer-toggle" />
