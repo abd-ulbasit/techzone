@@ -14,12 +14,12 @@ const Navbar = ({ children }: { children: React.ReactNode }) => {
                 <div className="flex-none">
                     <div className="drawer">
                         <input id="my-drawer" type="checkbox" className="drawer-toggle" />
-                        <div className="drawer-content">
+                        <div className="drawer-content ">
                             <label htmlFor="my-drawer" className="btn  drawer-button btn-ghost flex flex-row  ">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className=" w-5 h-5 stroke-current"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>Categories</label>
                         </div>
-                        <div className="drawer-side z-50">
-                            <label htmlFor="my-drawer" className="drawer-overlay"></label>
+                        <div className="drawer-side z-20">
+                            <label htmlFor="my-drawer" className="drawer-overlay"></label>/
                             <ul className="menu p-4 w-80 h-full text-base-content bg-base-100">
 
                                 {catogoryData ? catogoryData.map((category) => {
@@ -46,7 +46,7 @@ const Navbar = ({ children }: { children: React.ReactNode }) => {
                                 <span className="badge badge-sm indicator-item">{noOfItemsInCart}</span>
                             </div>
                         </label>
-                        <div tabIndex={0} className="mt-3 card card-compact dropdown-content w-52 bg-base-100 shadow">
+                        <div tabIndex={0} className="mt-3 card card-compact dropdown-content w-52 bg-base-100 shadow z-10">
                             <div className="card-body">
                                 <span className="font-bold text-lg">{noOfItemsInCart} {noOfItemsInCart == 1 ? "Item" : "Items"}</span>
                                 {/* <span className="text-info">Subtotal: $999</span> */}

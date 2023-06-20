@@ -8,7 +8,7 @@ import toast from 'react-hot-toast';
 
 const Cart = () => {
     const { data: userSession } = useSession();
-    const user_id = userSession?.user?.id as string;
+    const user_id = userSession?.user?.id ?? "";
     //this cart will have all the products fethced with in it
     const { data: cart } = trpc.cart.getCartWithProducts.useQuery({ user_id: user_id })
     const trpcContext = trpc.useContext();
@@ -72,7 +72,7 @@ const Cart = () => {
             <div className='flex flex-wrap gap-6 justify-center '>
                 {
                     cart ? cart.map((item) => {
-                        return <div className="card w-96 bg-base-100 shadow-xl image-full -z-10" key={item.product_id}>
+                        return <div className="card z-10 w-96 bg-base-100 shadow-xl image-full" key={item.product_id}>
                             <figure><Image src={item.product.image} alt={item.product.ProductName} width={500} height={500} /></figure>
                             <div className="card-body">
                                 <h2 className="card-title">{item.product.ProductName}</h2>
