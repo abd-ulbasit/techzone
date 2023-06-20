@@ -2,7 +2,7 @@ import { trpc } from '../utils/trpc'
 import Link from 'next/link';
 import { signIn, signOut, useSession } from 'next-auth/react';
 import Image from 'next/image';
-const Navbar = () => {
+const Navbar = ({ children }: { children: React.ReactNode }) => {
     const { data: sessionData } = useSession();
     const { data: catogoryData } = trpc.categories.getCatogoires.useQuery();
     const { data: noOfItemsInCart } = trpc.cart.getnumberofItemsInCart.useQuery({
@@ -11,7 +11,7 @@ const Navbar = () => {
 
     return (
         <>
-            <div className="navbar bg-base-100 z-20">
+            <div className="navbar bg-base-100 z-20 fixed ">
                 <div className="flex-none">
                     <div className="drawer">
                         <input id="my-drawer" type="checkbox" className="drawer-toggle" />
@@ -69,6 +69,9 @@ const Navbar = () => {
                         </ul>
                     </div>
                 </div>
+            </div>
+            <div className='pt-24'>
+                {children}
             </div>
         </>
 
