@@ -73,7 +73,7 @@ const Cart = () => {
                 {
                     cart ? cart.map((item) => {
                         return <div className="card z-10 w-96 bg-base-100 shadow-xl image-full" key={item.product_id}>
-                            <figure><Image src={item.product.image} alt={item.product.ProductName} width={500} height={500} /></figure>
+                            <figure><Image src={item?.product?.image ? item?.product?.image : ""} alt={item?.product?.ProductName ? item?.product?.ProductName : ""} width={500} height={500} /></figure>
                             <div className="card-body">
                                 <h2 className="card-title">{item.product.ProductName}</h2>
                                 <p className='  font-semibold text-base-300' >{item.product.Price} x {item.product_quantity} = {item.product.Price * item.product_quantity}</p>

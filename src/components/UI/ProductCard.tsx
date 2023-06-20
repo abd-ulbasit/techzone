@@ -50,8 +50,8 @@ const ProductCard = ({ props }: { props: Product }) => {
         router.push(`/productdetail/${props.pid}`)
     }
     return (
-        <div className="card card-compact w-96 bg-base-100 shadow-xl ">
-            <figure><Image src={props.image} alt={props.ProductName} width={400} height={400} priority /></figure>
+        <div className="card card-compact w-80  sm:w-96  bg-base-100 shadow-xl scale-90 md:scale-95 lg:scale-100 ">
+            <figure><Image src={props.image} alt={props.ProductName} width={400} height={300} priority /></figure>
             <div className="card-body">
                 <h2 className="card-title line-clamp-3">{props.ProductName}</h2>
                 <p>Only{props.quanity_in_inventory} remaining!</p>

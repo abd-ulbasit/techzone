@@ -49,7 +49,7 @@ const ProductDetail = () => {
     return (
         <div>
             <div className='flex flex-col gap-4 mx-auto my-6 w-3/4 md:flex-row  ' >
-                <div className='' ><Image src={product?.image || ""} alt={product?.ProductName || ""} width={500} height={500} /></div>
+                <div className='' ><Image src={product?.image ? product?.image : ""} alt={product?.ProductName ? product.ProductName : ""} width={500} height={500} priority={false} /></div>
                 <div className='basis-1/2'>
                     <h2 className='font-bold text-3xl py-2' >{product?.ProductName}</h2>
                     <div className='italic badge' >Rating: {product?.p_rating} / 5</div>
