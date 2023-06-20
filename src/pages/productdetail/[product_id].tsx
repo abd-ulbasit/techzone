@@ -30,7 +30,7 @@ const ProductDetail = () => {
     const { data: similarProducts } = trpc.products.getsimilarProducts.useQuery({ category_id: product?.category_Id || -1 })
     const handleAddToCart = async (pid: number) => {
         if (!UserSession) {
-            alert("LogIn to Add to Cart")
+            toast.error("LogIn to Add to Cart")
             return;
         }
         const user_id = UserSession.user?.id as string;
