@@ -22,7 +22,7 @@ export const productRouter = router({
   getsimilarProducts: publicProcedure
     .input(
       z.object({
-        category_id: z.number().optional(),
+        category_id: z.number(),
       })
     )
     .query(async ({ ctx, input }) => {

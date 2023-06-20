@@ -13,10 +13,10 @@ const ProductDetail = () => {
     const updateInCartMutation = trpc.cart.AddOneToCart.useMutation();
     const addToCartMutation = trpc.cart.addtoCart.useMutation()
     const { data: cart } = trpc.cart.getUserCart.useQuery({ user_id: UserSession?.user?.id || "" });
-    const productIdInNumber = parseInt(ProuductId);
+    const productIdInNumber = parseInt(ProuductId || "-1");
     const { data: product } = trpc.products.getProductwithDetails.useQuery({ product_id: productIdInNumber })
-    const { data: similarProducts } = trpc.products.getsimilarProducts.useQuery({ category_id: product?.category_Id })
-    console.log(similarProducts);
+    const { data: similarProducts } = trpc.products.getsimilarProducts.useQuery({ category_id: product?.category_Id || -1 })
+    // console.log(similarProducts);
     // const handleAddToCart = () => {
     //     // console.log("added");
 
