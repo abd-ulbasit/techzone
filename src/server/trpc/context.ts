@@ -3,7 +3,7 @@ import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
 import { type Session } from "next-auth";
 import { getServerAuthSession } from "../common/get-server-auth-session";
 import { prisma } from "../db/client";
-import cors from "nextjs-cors";
+// import cors from "nextjs-cors";
 type CreateContextOptions = {
   session: Session | null;
 };
@@ -23,9 +23,20 @@ export const createContextInner = async (opts: CreateContextOptions) => {
  * This is the actual context you'll use in your router
  * @link https://trpc.io/docs/context
  **/
+
 export const createContext = async (opts: CreateNextContextOptions) => {
   const { req, res } = opts;
-  await cors(req, res);
+
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET,OPTIONS,PATCH,DELETE,POST,PUT"
+  );
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "X-Requested-With, Content-Type, Authorization"
+  );
+  res.setHeader("Access-Control-Allow-Credentials", "true");
   // Get the session from the server using the unstable_getServerSession wrapper function
   const session = await getServerAuthSession({ req, res });
 
