@@ -38,7 +38,7 @@ const Navbar = ({ children }: { children: React.ReactNode }) => {
                 <div className="flex-1">
                     <Link href={"/"} className="btn btn-ghost normal-case text-xl">TechZone</Link>
                 </div>
-                <div className="flex-none">
+                <div className="flex-none z-10">
                     <div className="dropdown dropdown-end">
                         <label tabIndex={0} className="btn btn-ghost btn-circle">
                             <div className="indicator">

@@ -69,10 +69,10 @@ const Cart = () => {
     }, 0)
     return (
         <div>
-            <div className='flex flex-wrap gap-6 justify-center'>
+            <div className='flex flex-wrap gap-6 justify-center '>
                 {
                     cart ? cart.map((item) => {
-                        return <div className="card w-96 bg-base-100 shadow-xl image-full" key={item.product_id}>
+                        return <div className="card w-96 bg-base-100 shadow-xl image-full -z-10" key={item.product_id}>
                             <figure><Image src={item.product.image} alt={item.product.ProductName} width={500} height={500} /></figure>
                             <div className="card-body">
                                 <h2 className="card-title">{item.product.ProductName}</h2>
