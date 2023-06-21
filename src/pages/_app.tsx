@@ -6,6 +6,7 @@ import { trpc } from "../utils/trpc";
 
 import "../styles/globals.css";
 import Navbar from "../components/Navbar";
+import { ThemeProvider } from "next-themes";
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
@@ -13,10 +14,13 @@ const MyApp: AppType<{ session: Session | null }> = ({
 }) => {
   return (
     <SessionProvider session={session}>
-      <Navbar >
-        <Component {...pageProps} />
-      </Navbar>
-      <Toaster />
+      <ThemeProvider defaultTheme="system" enableSystem >
+
+        <Navbar >
+          <Component {...pageProps} />
+        </Navbar>
+        <Toaster />
+      </ThemeProvider>
     </SessionProvider>
   );
 };

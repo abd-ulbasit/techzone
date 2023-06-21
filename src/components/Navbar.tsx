@@ -2,12 +2,28 @@ import { trpc } from '../utils/trpc'
 import Link from 'next/link';
 import { signIn, signOut, useSession } from 'next-auth/react';
 import Image from 'next/image';
+import { useTheme } from 'next-themes';
+import { useEffect, useState } from 'react';
 const Navbar = ({ children }: { children: React.ReactNode }) => {
+    // const { setTheme, theme } = useTheme()
+
+
     const { data: sessionData } = useSession();
     const { data: catogoryData } = trpc.categories.getCatogoires.useQuery();
     const { data: noOfItemsInCart } = trpc.cart.getnumberofItemsInCart.useQuery({
         user_id: sessionData?.user?.id ? sessionData?.user?.id : ""
     })
+    const [mounted, setMounted] = useState(false)
+    const { theme, setTheme } = useTheme()
+
+    // useEffect only runs on the client, so now we can safely show the UI
+    useEffect(() => {
+        setMounted(true)
+    }, [])
+
+    if (!mounted) {
+        return null
+    }
     return (
         <>
             <div className="navbar bg-base-200 bg-opacity-60 z-20 fixed backdrop-blur-md">
@@ -18,9 +34,9 @@ const Navbar = ({ children }: { children: React.ReactNode }) => {
                             <label htmlFor="my-drawer" className="btn  drawer-button btn-ghost flex flex-row  ">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className=" w-5 h-5 stroke-current"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>Categories</label>
                         </div>
-                        <div className="drawer-side z-20">
-                            <label htmlFor="my-drawer" className="drawer-overlay"></label>/
-                            <ul className="menu p-4 w-80 h-full text-base-content bg-base-100">
+                        <div className="drawer-side z-20 ">
+                            <label htmlFor="my-drawer" className="drawer-overlay"></label>
+                            <ul className="menu p-4 w-80 h-full text-base-content bg-base-100 flex flex-col">
 
                                 {catogoryData ? catogoryData.map((category) => {
                                     return <li key={category.id} className={" btn btn-outline my-1 "} >
@@ -31,6 +47,12 @@ const Navbar = ({ children }: { children: React.ReactNode }) => {
                                     </li>
                                 }) : ""
                                 }
+                                <div className='flex flex-grow items-end content-center' >
+
+                                    <button className='btn btn-block' onClick={() => { setTheme(theme == "night" ? "lofi" : "night") }} >
+                                        {theme}
+                                    </button>
+                                </div>
                             </ul>
                         </div>
                     </div>
