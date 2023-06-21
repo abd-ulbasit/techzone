@@ -33,6 +33,10 @@ const ProductDetail = () => {
             toast.error("LogIn to Add to Cart")
             return;
         }
+        if (!((product?.quanity_in_inventory ?? -1) > (cart?.find((item) => item?.product_id === pid)?.product_quantity ?? 0))) {
+            toast.error("Item is out of stock")
+            return;
+        }
         const user_id = UserSession.user?.id as string;
         // const productId = props.pid
         if (cart?.find((item) => item.product_id === pid)) {

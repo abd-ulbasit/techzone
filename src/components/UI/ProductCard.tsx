@@ -27,8 +27,13 @@ const ProductCard = ({ props }: { props: Product }) => {
     })
     const { data: cart } = trpc.cart.getUserCart.useQuery({ user_id: UserSession?.user?.id || "" });
     const handleAddToCart = async () => {
+
         if (!UserSession) {
             toast.error("LogIn to Add to Cart")
+            return;
+        }
+        if (!(props.quanity_in_inventory > (cart?.find((item) => item?.product_id === props.pid)?.product_quantity ?? 0))) {
+            toast.error("Item out of stock")
             return;
         }
         const user_id = UserSession.user?.id as string;
