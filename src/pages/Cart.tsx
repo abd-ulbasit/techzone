@@ -42,7 +42,10 @@ const Cart = () => {
     const handleIncermentinCart = (product_id: number, productQuantity: number) => {
         if (!cart) return;
         // const { data: product } = trpc.products.getProductwithDetails.useQuery({ product_id })
-        if (productQuantity === productsFromInventory?.find((item) => item.pid === product_id)?.quanity_in_inventory) {
+        if (!(productQuantity < (
+            (productsFromInventory?.find((item) => item.pid === product_id) || {})?.quanity_in_inventory ?? -999
+        ))
+        ) {
             toast.error("you can not add more items")
             return;
         }

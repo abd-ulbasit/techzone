@@ -32,7 +32,7 @@ const ProductCard = ({ props }: { props: Product }) => {
             toast.error("LogIn to Add to Cart")
             return;
         }
-        if (!(props.quanity_in_inventory > (cart?.find((item) => item?.product_id === props.pid)?.product_quantity ?? 0))) {
+        if (!(props.quanity_in_inventory > (cart?.find((item) => item?.product_id === props.pid)?.product_quantity ?? -9999))) {
             toast.error("Item out of stock")
             return;
         }
