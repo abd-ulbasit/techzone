@@ -159,7 +159,7 @@ const CheckOut = () => {
                             {/*//! Fix this
                             When this button is clicked, automatically the order is getting placed */}
                             {!updateDetails ?
-                                <div className='flex' onClick={(e) => { e.preventDefault(); setUpdateDetails(true) }} ><button className='btn float-right' >Edit Details</button></div>
+                                <div className='flex' ><button className='btn flex-grow' onClick={(e) => { e.preventDefault(); setUpdateDetails(true) }} >Edit Details</button></div>
                                 : ""}
                         </div>
 

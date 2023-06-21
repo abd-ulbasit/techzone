@@ -73,7 +73,7 @@ const Navbar = ({ children }: { children: React.ReactNode }) => {
                                 <span className="font-bold text-lg">{noOfItemsInCart} {noOfItemsInCart == 1 ? "Item" : "Items"}</span>
                                 {/* <span className="text-info">Subtotal: $999</span> */}
                                 <div className="card-actions">
-                                    <Link href={"/Cart"} className="btn btn-primary btn-block">View cart</Link>
+                                    <Link href={"/Cart"} className="btn  btn-block">View cart</Link>
                                 </div>
                             </div>
                         </div>
