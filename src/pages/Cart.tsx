@@ -1,19 +1,26 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { trpc } from '../utils/trpc'
 import { useSession } from 'next-auth/react';
-// import { Cart  } from '@prisma/client';
+import type { Cart as CartType, Product } from '@prisma/client';
 import Image from 'next/image';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
-
+interface CartWithProduct extends CartType {
+    product: Product
+}
 const Cart = () => {
     const { data: userSession } = useSession();
     const user_id = userSession?.user?.id ?? "";
+    const [cart, setCart] = React.useState<CartWithProduct[]>([])
     //this cart will have all the products fethced with in it
-    const { data: cart } = trpc.cart.getCartWithProducts.useQuery({ user_id: user_id })
+    const { data: cartData } = trpc.cart.getCartWithProducts.useQuery({ user_id: user_id })
     const { data: productsFromInventory } = trpc.products.getProductsWithDetails.useQuery(cart?.map((item) => item.product_id) ?? [])
     const trpcContext = trpc.useContext();
-
+    useEffect(() => {
+        if (cartData) {
+            setCart(cartData)
+        }
+    }, [cartData])
     // console.log(cart);
     // const getUserCart
     const incrementIncartMutation = trpc.cart.AddOneToCart.useMutation({
@@ -49,6 +56,14 @@ const Cart = () => {
             toast.error("you can not add more items")
             return;
         }
+        setCart((prev) => {
+            return prev.map((item) => {
+                if (item.product_id === product_id) {
+                    return { ...item, product_quantity: item.product_quantity + 1 }
+                }
+                return item
+            })
+        })
         incrementIncartMutation.mutate({
             user_id: user_id, product_id: product_id
         })
@@ -58,14 +73,27 @@ const Cart = () => {
         // if (cart?.find((item) => item.product_id === product_id)?.product_quantity <= 0) {
         //     return;
         // }
+
         if (cart?.find((item) => item.product_id === product_id)?.product_quantity === 1) {
-            // alert("you can not remove more items")
+            //remove from cart
+            setCart((prev) => {
+                return prev.filter((item) => item.product_id !== product_id)
+            })
             removeFromCartMutation.mutate({ user_id: user_id, product_id: product_id })
 
         } else if (cart?.find((item) => item.product_id === product_id)?.product_quantity === 0) {
             toast.error("you can not remove more items")
             return;
         } else {
+            //decrement from cart
+            setCart((prev) => {
+                return prev.map((item) => {
+                    if (item.product_id === product_id) {
+                        return { ...item, product_quantity: item.product_quantity - 1 }
+                    }
+                    return item
+                })
+            })
             cartDecrementMutation.mutate({
                 user_id: user_id, product_id: product_id
             })
