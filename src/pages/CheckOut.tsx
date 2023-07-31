@@ -6,17 +6,22 @@ import type { Cart } from '@prisma/client';
 
 const CheckOut = () => {
     const [updateDetails, setUpdateDetails] = React.useState(false)
-    //first we have to find if the user details are already present in the database or not
-    //if they are present then we have to fetch them 
-    //if they want to update the details first update thier details.
-    //if they are not present then we have to show the form and then add them to the database
-    //after that we have to add the order details to the database
-    //after that we have to empty the cart
+    const addressRef = useRef<HTMLInputElement>(null);
+    const cityRef = useRef<HTMLInputElement>(null);
+    const provinceRef = useRef<HTMLInputElement>(null);
+    const phoneNoRef = useRef<HTMLInputElement>(null);
 
     const { data: userSession } = useSession();
+    if (!userSession) {
+        return (
+            <div className="flex flex-col items-center justify-center h-screen">
+                <h1 className="text-3xl font-bold">Please Login to place an order</h1>
+            </div>
+        )
+    }
     const user_id = userSession?.user?.id as string;
     //this cart will have all the products fethced with in it
-    const { data: cartWithProducts } = trpc.cart.getCartWithProducts.useQuery({ user_id: user_id })
+    const { data: cartWithProducts } = trpc.cart.getCartWithProducts.useQuery({ user_id: user_id }, { enabled: !!user_id })
     //extracting the cart from the cartWithProducts
     const cart: Cart[] | undefined = cartWithProducts?.map((item) => {
         return {
@@ -40,10 +45,7 @@ const CheckOut = () => {
     const updateUserDetailsMutation = trpc.userdetail.updateUserDetail.useMutation()
     const emptyCartM = trpc.cart.emptyCart.useMutation()
 
-    const addressRef = useRef<HTMLInputElement>(null);
-    const cityRef = useRef<HTMLInputElement>(null);
-    const provinceRef = useRef<HTMLInputElement>(null);
-    const phoneNoRef = useRef<HTMLInputElement>(null);
+
 
     const handlePlaceOrder = (e: React.FormEvent) => {
         e.preventDefault();
@@ -110,6 +112,25 @@ const CheckOut = () => {
     const grandtotal = totalpersamething?.reduce((a, b) => {
         return a + b
     }, 0)
+    const formatPhoneNumber = (input: string): string => {
+        const cleanedInput = input.replace(/\D/g, '').slice(0, 11); // Keep only digits and limit to 11 characters
+        const firstPart = cleanedInput.slice(0, 4);
+        const secondPart = cleanedInput.slice(4);
+
+        if (cleanedInput.length > 4) {
+            return `${firstPart}-${secondPart}`;
+        }
+
+        return firstPart;
+    };
+
+    const handleChange = (): void => {
+        if (phoneNoRef.current) {
+            const input: string = phoneNoRef.current.value;
+            const formattedNumber: string = formatPhoneNumber(input);
+            phoneNoRef.current.value = formattedNumber;
+        }
+    };
     return (
         <div className='w-9/12 mx-auto my-4' >
             <h1 className='font-extrabold text-4xl ' >CheckOut</h1>
@@ -120,7 +141,7 @@ const CheckOut = () => {
 
                         <div className='flex my-2 gap-3 align-middle items-center ' >
                             <label htmlFor="address" className='' >Shipping Address</label>
-                            <input type="text" name="address" id="address" ref={addressRef} className="input flex-grow p-3 bg-base-200" />
+                            <input type="text" name="address" id="address" ref={addressRef} className="input flex-grow p-3 bg-base-200" minLength={15} />
                         </div>
                         <div className='flex flex-wrap gap-2 flex-col' >
                             <div className='flex items-center  w-full justify-between ' >
@@ -133,7 +154,7 @@ const CheckOut = () => {
                             </div>
                             <div className='flex items-center w-full  justify-between ' >
                                 <label htmlFor="city" >Cell:</label>
-                                <input type="text" name="city" id="city" minLength={7} ref={phoneNoRef} className="input bg-base-200" />
+                                <input type="text" name="city" id="city" minLength={10} ref={phoneNoRef} className="input bg-base-200" />
                             </div>
                         </div>
                     </div> :
@@ -154,7 +175,7 @@ const CheckOut = () => {
                             </div>
                             <div className='flex items-center w-full  justify-between ' >
                                 <label htmlFor="city" >Cell:</label>
-                                <input disabled={!updateDetails} type="text" defaultValue={UserDetailsIndb.phoneNo} name="cell" id="cell" minLength={7} ref={phoneNoRef} className="input bg-base-200" />
+                                <input disabled={!updateDetails} type="text" defaultValue={UserDetailsIndb.phoneNo} name="cell" id="cell" minLength={7} ref={phoneNoRef} className="input bg-base-200" onChange={handleChange} />
                             </div>
                             {/*//! Fix this
                             When this button is clicked, automatically the order is getting placed */}
