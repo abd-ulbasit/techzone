@@ -10,11 +10,19 @@ interface CartWithProduct extends CartType {
 }
 const Cart = () => {
     const { data: userSession } = useSession();
+    const [productsFromInventory, setProductsFromInventory] = React.useState<Product[]>([])
     const user_id = userSession?.user?.id ?? "";
     const [cart, setCart] = React.useState<CartWithProduct[]>([])
     //this cart will have all the products fethced with in it
     const { data: cartData } = trpc.cart.getCartWithProducts.useQuery({ user_id: user_id })
-    const { data: productsFromInventory } = trpc.products.getProductsWithDetails.useQuery(cart?.map((item) => item.product_id) ?? [])
+    const { data } = trpc.products.getProductsWithDetails.useQuery(cart?.map((item) => item.product_id) ?? [])
+    useEffect(() => {
+        if (data) {
+            setProductsFromInventory(data)
+        }
+    }, [data])
+
+
     const trpcContext = trpc.useContext();
     useEffect(() => {
         if (cartData) {
@@ -24,16 +32,16 @@ const Cart = () => {
     // console.log(cart);
     // const getUserCart
     const incrementIncartMutation = trpc.cart.AddOneToCart.useMutation({
-        onSuccess(input) {
+        onSuccess(_input) {
             trpcContext.cart.getCartWithProducts.invalidate({ user_id: user_id });
-            trpcContext.cart.getnumberofItemsInCart.invalidate({ user_id: input.user_id })
+            trpcContext.cart.getnumberofItemsInCart.invalidate({ user_id: user_id })
             toast.success("Item added to cart")
         }
     });
     const cartDecrementMutation = trpc.cart.decrementFromCart.useMutation({
-        onSuccess(input) {
+        onSuccess(_input) {
             trpcContext.cart.getCartWithProducts.invalidate({ user_id: user_id });
-            trpcContext.cart.getnumberofItemsInCart.invalidate({ user_id: input.user_id })
+            trpcContext.cart.getnumberofItemsInCart.invalidate({ user_id: user_id })
             toast.success("Item removed from cart")
         }
     });

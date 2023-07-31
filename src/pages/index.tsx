@@ -4,8 +4,11 @@ import Head from "next/head";
 import { trpc } from "../utils/trpc";
 import ProductCard from "../components/UI/ProductCard";
 const Home: NextPage = () => {
-  const { data: products } = trpc.products.getAllProducts.useQuery();
+  const { data: products, error } = trpc.products.getAllProducts.useQuery(undefined, { retry: false });
   // console.log(data);
+  if (error?.message) {
+    return <div>{error.message}</div>
+  }
 
   return (
     <>
