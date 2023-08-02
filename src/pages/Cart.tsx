@@ -5,22 +5,24 @@ import type { Cart as CartType, Product } from '@prisma/client';
 import Image from 'next/image';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
+import useProductStore from '../stores/productStore';
 interface CartWithProduct extends CartType {
     product: Product
 }
 const Cart = () => {
     const { data: userSession } = useSession();
-    const [productsFromInventory, setProductsFromInventory] = React.useState<Product[]>([])
+    // const [productsInInventory, setProductsInInventory] = React.useState<Product[]>([])
+    const productsInInventory = useProductStore(({ products }) => products)
     const user_id = userSession?.user?.id ?? "";
     const [cart, setCart] = React.useState<CartWithProduct[]>([])
     //this cart will have all the products fethced with in it
     const { data: cartData } = trpc.cart.getCartWithProducts.useQuery({ user_id: user_id })
-    const { data } = trpc.products.getProductsWithDetails.useQuery(cart?.map((item) => item.product_id) ?? [])
-    useEffect(() => {
-        if (data) {
-            setProductsFromInventory(data)
-        }
-    }, [data])
+    // const { data } = trpc.products.getProductsWithDetails.useQuery(cart?.map((item) => item.product_id) ?? [])
+    // useEffect(() => {
+    //     if (data) {
+    //         setProductsInInventory(data)
+    //     }
+    // }, [data])
 
 
     const trpcContext = trpc.useContext();
@@ -58,7 +60,7 @@ const Cart = () => {
         if (!cart) return;
         // const { data: product } = trpc.products.getProductwithDetails.useQuery({ product_id })
         if (!(productQuantity < (
-            (productsFromInventory?.find((item) => item.pid === product_id) || {})?.quanity_in_inventory ?? -999
+            (productsInInventory?.find((item) => item.pid === product_id) || {})?.quanity_in_inventory ?? -999
         ))
         ) {
             toast.error("you can not add more items")
