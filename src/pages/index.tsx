@@ -4,7 +4,7 @@ import Head from "next/head";
 import { trpc } from "../utils/trpc";
 import ProductCard from "../components/UI/ProductCard";
 const Home: NextPage = () => {
-  const { data: products, error } = trpc.products.getAllProducts.useQuery(undefined, { retry: false });
+  const { data: products, error, isLoading } = trpc.products.getAllProducts.useQuery(undefined, { retry: false });
   // console.log(data);
   if (error?.message) {
     return <div>{error.message}</div>
@@ -20,7 +20,11 @@ const Home: NextPage = () => {
       </Head>
       <main >
         <div className="flex gap-3 flex-wrap  justify-center" >
-
+          {
+            isLoading && <div className="h-screen flex items-center justify-center" >
+              <span className="loading loading-ring loading-lg scale-150"></span>
+            </div>
+          }
           {products?.map((product) => {
 
             return <div key={product.pid} >
