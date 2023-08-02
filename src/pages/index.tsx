@@ -3,9 +3,14 @@ import Head from "next/head";
 // import Link from "next/link";
 import { trpc } from "../utils/trpc";
 import ProductCard from "../components/UI/ProductCard";
+import { useEffect } from "react";
+import useProductStore from "../stores/productStore";
 const Home: NextPage = () => {
-  const { data: products, error, isLoading } = trpc.products.getAllProducts.useQuery(undefined, { retry: false });
-  // console.log(data);
+  const [products, setProducts] = useProductStore(({ products, setProducts }) => [products, setProducts])
+  const { data: productsFromServer, error, isLoading } = trpc.products.getAllProducts.useQuery(undefined, { retry: false });
+  useEffect(() => {
+    setProducts(productsFromServer ?? [])
+  }, [productsFromServer])
   if (error?.message) {
     return <div>{error.message}</div>
   }
