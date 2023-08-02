@@ -4,12 +4,13 @@ import { signIn, signOut, useSession } from 'next-auth/react';
 import Image from 'next/image';
 import { useTheme } from 'next-themes';
 import { useEffect, useState } from 'react';
+import Category from '../pages/categories/[category]';
 const Navbar = ({ children }: { children: React.ReactNode }) => {
     // const { setTheme, theme } = useTheme()
 
 
     const { data: sessionData } = useSession();
-    const { data: catogoryData } = trpc.categories.getCatogoires.useQuery();
+    const { data: catogoryData, isLoading: LoadingCatogoires } = trpc.categories.getCatogoires.useQuery();
     const { data: noOfItemsInCart } = trpc.cart.getnumberofItemsInCart.useQuery({
         user_id: sessionData?.user?.id ? sessionData?.user?.id : ""
     })
@@ -35,18 +36,26 @@ const Navbar = ({ children }: { children: React.ReactNode }) => {
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className=" w-5 h-5 stroke-current"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>Categories</label>
                         </div>
                         <div className="drawer-side z-20 ">
-                            <label htmlFor="my-drawer" className="drawer-overlay"></label>
+                            <label htmlFor="my-drawer" className="drawer-overlay">Category</label>
                             <div className="menu p-4 w-80 h-full text-base-content bg-base-100 flex flex-col">
-
-                                {catogoryData ? catogoryData.map((category) => {
-
-                                    return <Link className='btn btn-outline mb-1' href={`/categories/${category.category_name}`} key={category.id} >
-                                        <input id="my-drawer" type="checkbox" className="drawer-toggle" />
-                                        {category.category_name}
-                                    </Link>
-                                }) : ""
+                                {
+                                    LoadingCatogoires &&
+                                    <div className='flex-grow flex items-center justify-center w-full' >
+                                        <span className="loading loading-ring loading-lg"></span>
+                                    </div>
                                 }
-                                <div className='flex flex-grow items-end content-center' >
+                                <div className='flex-grow flex flex-col' >
+
+                                    {catogoryData && catogoryData.map((category) => {
+
+                                        return <Link className='btn btn-outline mb-1' href={`/categories/${category.category_name}`} key={category.id} >
+                                            <input id="my-drawer" type="checkbox" className="drawer-toggle" />
+                                            {category.category_name}
+                                        </Link>
+                                    })
+                                    }
+                                </div>
+                                <div className='flex   content-center' >
 
                                     <button className='btn btn-block' onClick={() => { setTheme(theme == "night" ? "lofi" : "night") }} >
                                         {theme}
