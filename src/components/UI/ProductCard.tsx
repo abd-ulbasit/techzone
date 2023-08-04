@@ -6,8 +6,10 @@ import { useRouter } from 'next/router';
 import React from 'react'
 import { trpc } from '../../utils/trpc';
 import toast from 'react-hot-toast';
+import { useCartStore } from '../../stores/cartStore';
 
 const ProductCard = ({ props }: { props: Product }) => {
+    const [addToCartClientSide, incrementQuantityClientSide] = useCartStore(state => [state.addToCart, state.increaseQuantity])
     const { data: UserSession } = useSession()
     const router = useRouter();
     const trpcContext = trpc.useContext();
@@ -40,9 +42,11 @@ const ProductCard = ({ props }: { props: Product }) => {
         const productId = props.pid
         if (cart?.find((item) => item.product_id === props.pid)) {
             //item already in cart now increment in it.
+            incrementQuantityClientSide(productId)
             updateInCartMutation.mutate({ user_id: user_id, product_id: productId })
             return;
         } else {
+            addToCartClientSide({ product_quantity: 1, product_id: productId, user_id: user_id, product: props })
             addToCartMutation.mutate({ quantity: 1, pId: productId, uId: user_id })
         }
         // const userid=UserSession.user?.id

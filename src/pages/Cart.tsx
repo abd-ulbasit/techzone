@@ -6,33 +6,24 @@ import Image from 'next/image';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
 import useProductStore from '../stores/productStore';
+import { useCartStore } from '../stores/cartStore';
 interface CartWithProduct extends CartType {
     product: Product
 }
 const Cart = () => {
     const { data: userSession } = useSession();
-    // const [productsInInventory, setProductsInInventory] = React.useState<Product[]>([])
+
     const productsInInventory = useProductStore(({ products }) => products)
     const user_id = userSession?.user?.id ?? "";
-    const [cart, setCart] = React.useState<CartWithProduct[]>([])
+    const [cart, increaseQuantity, decreaseQuantity, removeFromCart] = useCartStore(state => [state.cart, state.increaseQuantity, state.decreaseQuantity, state.removeFromCart]);
+
+    // const [cart, setCart] = React.useState<CartWithProduct[]>([])
+
     //this cart will have all the products fethced with in it
-    const { data: cartData } = trpc.cart.getCartWithProducts.useQuery({ user_id: user_id })
-    // const { data } = trpc.products.getProductsWithDetails.useQuery(cart?.map((item) => item.product_id) ?? [])
-    // useEffect(() => {
-    //     if (data) {
-    //         setProductsInInventory(data)
-    //     }
-    // }, [data])
 
 
     const trpcContext = trpc.useContext();
-    useEffect(() => {
-        if (cartData) {
-            setCart(cartData)
-        }
-    }, [cartData])
-    // console.log(cart);
-    // const getUserCart
+
     const incrementIncartMutation = trpc.cart.AddOneToCart.useMutation({
         onSuccess(_input) {
             trpcContext.cart.getCartWithProducts.invalidate({ user_id: user_id });
@@ -55,7 +46,6 @@ const Cart = () => {
             toast.success("Item removed from cart")
         }
     })
-    // const cartType = typeof cart
     const handleIncermentinCart = (product_id: number, productQuantity: number) => {
         if (!cart) return;
         // const { data: product } = trpc.products.getProductwithDetails.useQuery({ product_id })
@@ -66,44 +56,25 @@ const Cart = () => {
             toast.error("you can not add more items")
             return;
         }
-        setCart((prev) => {
-            return prev.map((item) => {
-                if (item.product_id === product_id) {
-                    return { ...item, product_quantity: item.product_quantity + 1 }
-                }
-                return item
-            })
-        })
+
+        increaseQuantity(product_id)
         incrementIncartMutation.mutate({
             user_id: user_id, product_id: product_id
         })
         // toast.success("Item added to cart")
     }
     const handleDecremnetIncart = (product_id: number) => {
-        // if (cart?.find((item) => item.product_id === product_id)?.product_quantity <= 0) {
-        //     return;
-        // }
-
         if (cart?.find((item) => item.product_id === product_id)?.product_quantity === 1) {
-            //remove from cart
-            setCart((prev) => {
-                return prev.filter((item) => item.product_id !== product_id)
-            })
+
+            removeFromCart(product_id)
             removeFromCartMutation.mutate({ user_id: user_id, product_id: product_id })
 
         } else if (cart?.find((item) => item.product_id === product_id)?.product_quantity === 0) {
             toast.error("you can not remove more items")
             return;
         } else {
-            //decrement from cart
-            setCart((prev) => {
-                return prev.map((item) => {
-                    if (item.product_id === product_id) {
-                        return { ...item, product_quantity: item.product_quantity - 1 }
-                    }
-                    return item
-                })
-            })
+
+            decreaseQuantity(product_id)
             cartDecrementMutation.mutate({
                 user_id: user_id, product_id: product_id
             })
@@ -137,7 +108,7 @@ const Cart = () => {
                 }
             </div>
             {userSession && grandtotal ?
-                <div className=' fixed right-12 bottom-12' >
+                <div className=' fixed right-12 bottom-12 z-20' >
                     <div className='text-center  bg-primary text-base-300 py-2 ' >{grandtotal} PKRs</div>
                     <Link href={`/CheckOut`} className=' p-3 rounded-sm hover:scale-105  hover:rounded-md btn'  >Proceed to Checkout </Link>
                 </div> : ""}

@@ -9,7 +9,7 @@ interface CartStoreType {
   addToCart: (product: CartItem) => void;
   removeFromCart: (productId: number) => void;
   increaseQuantity: (productId: number) => void;
-  deceaseQuantity: (productId: number) => void;
+  decreaseQuantity: (productId: number) => void;
   clearCart: () => void;
 }
 export const useCartStore = create<CartStoreType>((set) => ({
@@ -30,24 +30,23 @@ export const useCartStore = create<CartStoreType>((set) => ({
       // console.log("increaseQuantity")
 
       cart: state.cart.map((item) => {
-        console.log("item.product.pid", item.product.pid);
-
         if (item.product.pid === productId) {
+          console.log("item.product.pid", item.product.pid);
           return {
             ...item,
-            quantity: item.product_quantity + 1,
+            product_quantity: item.product_quantity + 1,
           };
         }
         return item;
       }),
     })),
-  deceaseQuantity: (productId: number) =>
+  decreaseQuantity: (productId: number) =>
     set((state) => ({
       cart: state.cart.map((item) => {
         if (item.product.pid === productId) {
           return {
             ...item,
-            quantity: item.product_quantity - 1,
+            product_quantity: item.product_quantity - 1,
           };
         }
         return item;
