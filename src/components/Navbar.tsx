@@ -5,15 +5,34 @@ import Image from 'next/image';
 import { useTheme } from 'next-themes';
 import { useEffect, useState } from 'react';
 import Category from '../pages/categories/[category]';
+import { useCartStore } from '../stores/cartStore';
 const Navbar = ({ children }: { children: React.ReactNode }) => {
     // const { setTheme, theme } = useTheme()
 
-
+    const [cart, setCart] = useCartStore(({ cart, setCart }) => [cart, setCart]);
     const { data: sessionData } = useSession();
     const { data: catogoryData, isLoading: LoadingCatogoires } = trpc.categories.getCatogoires.useQuery();
-    const { data: noOfItemsInCart } = trpc.cart.getnumberofItemsInCart.useQuery({
+    const [noOfItemsInCart, setNoOfItemsInCart] = useState(0)
+    // const { data: noOfItemsInCart } = trpc.cart.getnumberofItemsInCart.useQuery({
+    //     user_id: sessionData?.user?.id ? sessionData?.user?.id : ""
+    // })
+    useEffect(() => {
+        //calcluate the no of items in cart 
+        const no = cart.reduce((acc, item) => {
+            return acc + item.product_quantity
+        }, 0)
+
+        setNoOfItemsInCart(no)
+    }, [cart])
+    const { data: cartData } = trpc.cart.getCartWithProducts.useQuery({
         user_id: sessionData?.user?.id ? sessionData?.user?.id : ""
     })
+    useEffect(() => {
+        if (cartData) {
+            setCart(cartData)
+        }
+    }, [cartData])
+
     const [mounted, setMounted] = useState(false)
     const { theme, setTheme } = useTheme()
 
@@ -48,7 +67,7 @@ const Navbar = ({ children }: { children: React.ReactNode }) => {
 
                                     {catogoryData && catogoryData.map((category) => {
 
-                                        return <Link className='btn btn-outline mb-1' href={`/categories/${category.category_name}`} key={category.id} >
+                                        return <Link className='btn btn-outline mb-1' href={`/categories/${category.id}`} key={category.id} >
                                             <input id="my-drawer" type="checkbox" className="drawer-toggle" />
                                             {category.category_name}
                                         </Link>
