@@ -14,13 +14,11 @@ const ProductDetail = () => {
     const trpcContext = trpc.useContext();
     const updateInCartMutation = trpc.cart.AddOneToCart.useMutation({
         onSuccess(input) {
-            trpcContext.cart.getnumberofItemsInCart.invalidate({ user_id: UserSession?.user?.id ?? "" })
             toast.success("Item added to cart")
         }
     });
     const addToCartMutation = trpc.cart.addtoCart.useMutation({
         onSuccess(input) {
-            trpcContext.cart.getnumberofItemsInCart.invalidate({ user_id: input.user_id })
             toast.success("Item added to cart")
         }
     })
