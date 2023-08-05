@@ -125,34 +125,6 @@ export const cartRouter = router({
         },
       });
     }),
-  getnumberofItemsInCart: publicProcedure
-    .input(
-      z.object({
-        user_id: string(),
-      })
-    )
-    .query(async ({ ctx, input }) => {
-      if (input.user_id == "") {
-        return 0;
-      }
-      const cart = await ctx.prisma.cart.findMany({
-        where: {
-          user_id: input.user_id,
-        },
-      });
-      const sum = cart
-        .map((e) => {
-          return e.product_quantity;
-        })
-        .reduce((nsum: number, x: number) => {
-          return nsum + x;
-        }, 0);
-      //   const agg=sum.
-      return sum as number;
-      // const sum =cart.reduce((item)=>{
-      //     return item.
-      // })
-    }),
   getCartWithProducts: publicProcedure
     .input(z.object({ user_id: z.string() }))
     .query(async ({ ctx, input }) => {

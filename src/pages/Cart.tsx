@@ -27,14 +27,12 @@ const Cart = () => {
     const incrementIncartMutation = trpc.cart.AddOneToCart.useMutation({
         onSuccess(_input) {
             trpcContext.cart.getCartWithProducts.invalidate({ user_id: user_id });
-            trpcContext.cart.getnumberofItemsInCart.invalidate({ user_id: user_id })
             toast.success("Item added to cart")
         }
     });
     const cartDecrementMutation = trpc.cart.decrementFromCart.useMutation({
         onSuccess(_input) {
             trpcContext.cart.getCartWithProducts.invalidate({ user_id: user_id });
-            trpcContext.cart.getnumberofItemsInCart.invalidate({ user_id: user_id })
             toast.success("Item removed from cart")
         }
     });
@@ -42,7 +40,6 @@ const Cart = () => {
         onSuccess(input) {
 
             trpcContext.cart.getCartWithProducts.invalidate({ user_id: input.user_id })
-            trpcContext.cart.getnumberofItemsInCart.invalidate({ user_id: input.user_id })
             toast.success("Item removed from cart")
         }
     })
