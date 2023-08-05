@@ -16,13 +16,11 @@ const ProductCard = ({ props }: { props: Product }) => {
     const updateInCartMutation = trpc.cart.AddOneToCart.useMutation({
         onSuccess() {
             // trpcContext.cart.getCart.invalidate({ user_id: UserSession?.user?.id || "" })
-            trpcContext.cart.getnumberofItemsInCart.invalidate({ user_id: UserSession?.user?.id || "" })
             toast.success("Item Added to Cart")
         }
     });
     const addToCartMutation = trpc.cart.addtoCart.useMutation({
         onSuccess() {
-            trpcContext.cart.getnumberofItemsInCart.invalidate({ user_id: UserSession?.user?.id || "" })
             toast.success("Item Added to Cart")
 
         }
