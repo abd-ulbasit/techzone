@@ -1,8 +1,6 @@
-// import { Cart } from '@prisma/client';
 import { z } from "zod";
 import { publicProcedure, router } from "../trpc";
 import type { Cart, Product } from "@prisma/client";
-// import { pid } from "process";
 
 export const ordersRouter = router({
   addOrder: publicProcedure
@@ -50,22 +48,6 @@ export const ordersRouter = router({
             (product?.product_quantity ? product?.product_quantity : 0),
         } as Product;
       });
-      // await ctx.prisma.product.updateMany({
-      //   where: {
-      //     pid: {
-      //       in: updatedProducts.map((item) => item.pid),
-      //     },
-      //   },
-      //   data: {
-      //     quanity_in_inventory:{
-      //       set:updatedProducts.map((item) => {
-      //         where :{pid: item.pid},
-      //         data: {quanity_in_inventory: item.quanity_in_inventory}
-      //       }),
-      //     }
-      //   },
-      // });
-      console.log(updatedProducts);
       await Promise.all(
         updatedProducts.map(async (item) => {
           return await ctx.prisma.product.update({
