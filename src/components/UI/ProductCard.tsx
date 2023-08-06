@@ -25,7 +25,7 @@ const ProductCard = ({ props }: { props: Product }) => {
 
         }
     })
-    const { data: cart } = trpc.cart.getUserCart.useQuery({ user_id: UserSession?.user?.id || "" });
+    const { data: cart } = trpc.cart.getUserCart.useQuery(undefined, { enabled: !!UserSession?.user?.id });
     const handleAddToCart = async () => {
 
         if (!UserSession) {
@@ -41,11 +41,11 @@ const ProductCard = ({ props }: { props: Product }) => {
         if (cart?.find((item) => item.product_id === props.pid)) {
             //item already in cart now increment in it.
             incrementQuantityClientSide(productId)
-            updateInCartMutation.mutate({ user_id: user_id, product_id: productId })
+            updateInCartMutation.mutate({ product_id: productId })
             return;
         } else {
             addToCartClientSide({ product_quantity: 1, product_id: productId, user_id: user_id, product: props })
-            addToCartMutation.mutate({ quantity: 1, pId: productId, uId: user_id })
+            addToCartMutation.mutate({ quantity: 1, pId: productId })
         }
         // const userid=UserSession.user?.id
         // console.log("added to cart");

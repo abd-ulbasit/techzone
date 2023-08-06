@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { protectedProcedure, publicProcedure, router } from "./../trpc";
+import { protectedProcedure, router } from "./../trpc";
 
 export const cartRouter = router({
   addtoCart: protectedProcedure

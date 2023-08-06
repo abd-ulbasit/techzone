@@ -26,20 +26,20 @@ const Cart = () => {
 
     const incrementIncartMutation = trpc.cart.AddOneToCart.useMutation({
         onSuccess(_input) {
-            trpcContext.cart.getCartWithProducts.invalidate({ user_id: user_id });
+            trpcContext.cart.getCartWithProducts.invalidate();
             toast.success("Item added to cart")
         }
     });
     const cartDecrementMutation = trpc.cart.decrementFromCart.useMutation({
         onSuccess(_input) {
-            trpcContext.cart.getCartWithProducts.invalidate({ user_id: user_id });
+            trpcContext.cart.getCartWithProducts.invalidate();
             toast.success("Item removed from cart")
         }
     });
     const removeFromCartMutation = trpc.cart.RemoveFromCart.useMutation({
         onSuccess(input) {
 
-            trpcContext.cart.getCartWithProducts.invalidate({ user_id: input.user_id })
+            trpcContext.cart.getCartWithProducts.invalidate()
             toast.success("Item removed from cart")
         }
     })
@@ -56,7 +56,7 @@ const Cart = () => {
 
         increaseQuantity(product_id)
         incrementIncartMutation.mutate({
-            user_id: user_id, product_id: product_id
+            product_id: product_id
         })
         // toast.success("Item added to cart")
     }
@@ -64,7 +64,7 @@ const Cart = () => {
         if (cart?.find((item) => item.product_id === product_id)?.product_quantity === 1) {
 
             removeFromCart(product_id)
-            removeFromCartMutation.mutate({ user_id: user_id, product_id: product_id })
+            removeFromCartMutation.mutate({ product_id: product_id })
 
         } else if (cart?.find((item) => item.product_id === product_id)?.product_quantity === 0) {
             toast.error("you can not remove more items")
@@ -73,7 +73,7 @@ const Cart = () => {
 
             decreaseQuantity(product_id)
             cartDecrementMutation.mutate({
-                user_id: user_id, product_id: product_id
+                product_id: product_id
             })
         }
     }

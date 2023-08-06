@@ -22,7 +22,7 @@ const ProductDetail = () => {
             toast.success("Item added to cart")
         }
     })
-    const { data: cart } = trpc.cart.getUserCart.useQuery({ user_id: UserSession?.user?.id || "" });
+    const { data: cart } = trpc.cart.getUserCart.useQuery(undefined, { enabled: !!UserSession?.user?.id });
     const productIdInNumber = parseInt(ProuductId || "-1");
     const { data: product } = trpc.products.getProductwithDetails.useQuery({ product_id: productIdInNumber })
     const { data: similarProducts } = trpc.products.getsimilarProducts.useQuery({ category_id: product?.category_Id || -1 })
@@ -39,10 +39,10 @@ const ProductDetail = () => {
         // const productId = props.pid
         if (cart?.find((item) => item.product_id === pid)) {
             //item already in cart now increment in it.
-            updateInCartMutation.mutate({ user_id: user_id, product_id: pid })
+            updateInCartMutation.mutate({ product_id: pid })
             return;
         } else {
-            addToCartMutation.mutate({ quantity: 1, pId: pid, uId: user_id })
+            addToCartMutation.mutate({ quantity: 1, pId: pid })
         }
         // const userid=UserSession.user?.id
         // console.log("added to cart");

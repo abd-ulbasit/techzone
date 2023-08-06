@@ -23,9 +23,7 @@ const Navbar = ({ children }: { children: React.ReactNode }) => {
 
         setNoOfItemsInCart(no)
     }, [cart])
-    const { data: cartData } = trpc.cart.getCartWithProducts.useQuery({
-        user_id: sessionData?.user?.id ? sessionData?.user?.id : ""
-    })
+    const { data: cartData } = trpc.cart.getCartWithProducts.useQuery(undefined, { enabled: !!sessionData?.user?.id })
     useEffect(() => {
         if (cartData) {
             setCart(cartData)

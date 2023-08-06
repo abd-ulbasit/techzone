@@ -21,7 +21,7 @@ const CheckOut = () => {
     }
     const user_id = userSession?.user?.id as string;
     //this cart will have all the products fethced with in it
-    const { data: cartWithProducts } = trpc.cart.getCartWithProducts.useQuery({ user_id: user_id }, { enabled: !!user_id })
+    const { data: cartWithProducts } = trpc.cart.getCartWithProducts.useQuery(undefined, { enabled: !!user_id })
     //extracting the cart from the cartWithProducts
     const cart: Cart[] | undefined = cartWithProducts?.map((item) => {
         return {
@@ -32,7 +32,7 @@ const CheckOut = () => {
     })
     const addOrderMutation = trpc.orders.addOrder.useMutation({
         onSuccess() {
-            emptyCartM.mutate({ user_id: user_id })
+            emptyCartM.mutate()
             toast.success("Your Order has been placed")
             setTimeout(() => {
                 window.location.href = "/"
