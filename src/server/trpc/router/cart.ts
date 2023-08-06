@@ -1,12 +1,10 @@
-// import { Input } from "postcss";
-import { string, z } from "zod";
-import { publicProcedure, router } from "./../trpc";
+import { z } from "zod";
+import { protectedProcedure, publicProcedure, router } from "./../trpc";
 
 export const cartRouter = router({
-  addtoCart: publicProcedure
+  addtoCart: protectedProcedure
     .input(
       z.object({
-        uId: z.string(),
         pId: z.number(),
         quantity: z.number(),
       })
@@ -14,29 +12,22 @@ export const cartRouter = router({
     .mutation(async ({ ctx, input }) => {
       return await ctx.prisma.cart.create({
         data: {
-          product_id: input?.pId,
-          user_id: input?.uId,
-          product_quantity: input?.quantity,
+          product_id: input.pId,
+          user_id: ctx.session.user.id,
+          product_quantity: input.quantity,
         },
       });
     }),
-  getUserCart: publicProcedure
+  getUserCart: protectedProcedure.query(async ({ ctx }) => {
+    return await ctx.prisma.cart.findMany({
+      where: {
+        user_id: ctx.session.user.id,
+      },
+    });
+  }),
+  AddOneToCart: protectedProcedure
     .input(
       z.object({
-        user_id: z.string(),
-      })
-    )
-    .query(async ({ ctx, input }) => {
-      return await ctx.prisma.cart.findMany({
-        where: {
-          user_id: input.user_id,
-        },
-      });
-    }),
-  AddOneToCart: publicProcedure
-    .input(
-      z.object({
-        user_id: z.string(),
         product_id: z.number(),
       })
     )
@@ -50,7 +41,7 @@ export const cartRouter = router({
       const cart = await ctx.prisma.cart.findUnique({
         where: {
           user_id_product_id: {
-            user_id: input.user_id,
+            user_id: ctx.session.user.id,
             product_id: input.product_id,
           },
         },
@@ -62,7 +53,7 @@ export const cartRouter = router({
       return await ctx.prisma.cart.update({
         where: {
           user_id_product_id: {
-            user_id: input.user_id,
+            user_id: ctx.session.user.id,
             product_id: input.product_id,
           },
         },
@@ -73,10 +64,9 @@ export const cartRouter = router({
         },
       });
     }),
-  decrementFromCart: publicProcedure
+  decrementFromCart: protectedProcedure
     .input(
       z.object({
-        user_id: z.string(),
         product_id: z.number(),
       })
     )
@@ -84,7 +74,7 @@ export const cartRouter = router({
       return await ctx.prisma.cart.update({
         where: {
           user_id_product_id: {
-            user_id: input.user_id,
+            user_id: ctx.session.user.id,
             product_id: input.product_id,
           },
         },
@@ -95,10 +85,9 @@ export const cartRouter = router({
         },
       });
     }),
-  RemoveFromCart: publicProcedure
+  RemoveFromCart: protectedProcedure
     .input(
       z.object({
-        user_id: z.string(),
         product_id: z.number(),
       })
     )
@@ -106,35 +95,27 @@ export const cartRouter = router({
       return await ctx.prisma.cart.delete({
         where: {
           user_id_product_id: {
-            user_id: input.user_id,
+            user_id: ctx.session.user.id,
             product_id: input.product_id,
           },
         },
       });
     }),
-  emptyCart: publicProcedure
-    .input(
-      z.object({
-        user_id: z.string(),
-      })
-    )
-    .mutation(async ({ ctx, input }) => {
-      return await ctx.prisma.cart.deleteMany({
-        where: {
-          user_id: input.user_id,
-        },
-      });
-    }),
-  getCartWithProducts: publicProcedure
-    .input(z.object({ user_id: z.string() }))
-    .query(async ({ ctx, input }) => {
-      return await ctx.prisma.cart.findMany({
-        where: {
-          user_id: input.user_id,
-        },
-        include: {
-          product: true,
-        },
-      });
-    }),
+  emptyCart: protectedProcedure.mutation(async ({ ctx }) => {
+    return await ctx.prisma.cart.deleteMany({
+      where: {
+        user_id: ctx.session.user.id,
+      },
+    });
+  }),
+  getCartWithProducts: protectedProcedure.query(async ({ ctx }) => {
+    return await ctx.prisma.cart.findMany({
+      where: {
+        user_id: ctx.session.user.id,
+      },
+      include: {
+        product: true,
+      },
+    });
+  }),
 });

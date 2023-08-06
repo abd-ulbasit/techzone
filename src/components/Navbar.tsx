@@ -4,7 +4,6 @@ import { signIn, signOut, useSession } from 'next-auth/react';
 import Image from 'next/image';
 import { useTheme } from 'next-themes';
 import { useEffect, useState } from 'react';
-import Category from '../pages/categories/[category]';
 import { useCartStore } from '../stores/cartStore';
 const Navbar = ({ children }: { children: React.ReactNode }) => {
     // const { setTheme, theme } = useTheme()
